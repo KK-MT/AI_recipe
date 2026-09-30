@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-AIで料理レシピを作成し、WEBで公開するプロジェクト。自動投稿エージェントの詳細ルールは `AGENTS.md` を参照。
+AIで料理レシピを作成し、WEBで公開するプロジェクト。担当ごとのルールは `AGENTS.md`(統括)と `agents/<担当>/AGENTS.md` を参照。
 
 ## 絶対ルール
 
@@ -42,4 +42,6 @@ AIで料理レシピを作成し、WEBで公開するプロジェクト。自動
 
 ## 参照
 
-- 自動投稿エージェントの役割・レシピ仕様・安全チェック: `AGENTS.md`
+- 統括・担当一覧: `AGENTS.md`
+- レシピ: `agents/recipe/AGENTS.md` / 設計: `agents/design/AGENTS.md` / 画像: `agents/image/AGENTS.md`
+- 実装: `agents/frontend/AGENTS.md` / 公開・運用: `agents/ops/AGENTS.md`
