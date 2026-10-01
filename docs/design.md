@@ -74,3 +74,6 @@ scripts/validate-recipes.*      # 公開前検証(PRのCIで実行)
 
 ## 実装状況: 検証(ステップ3)
 `npm run validate` で次を検査する(CIでも実行)。スキーマ・AI表記、画像の存在とalt、slug/タイトル重複、禁止表現、アレルゲン整合、加熱記述(警告)、アフィリエイトのURL/ドメイン整合、リンク疎通(`--check-links`)。ルールは `scripts/rules.json`。自動マージ(フェーズ2)は未実装で、ユーザーの指示後に別途設計する。
+
+## 実装状況: 画像生成
+Claude Code の実行環境は OpenAI に接続できないため、画像は GitHub Actions で生成する。`recipe/**` ブランチへの push で `images.yml` が `npm run images` を実行し、未生成の画像(`image.prompt` があるレシピ)を gpt-image で作って同じブランチにコミットし、CI を再実行する。キーは GitHub Secrets の `OPENAI_API_KEY` のみ。最初のCIは画像が無く赤になり、画像コミット後の再実行で緑になる。

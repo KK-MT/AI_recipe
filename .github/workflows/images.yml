@@ -1,0 +1,54 @@
+name: 画像生成
+
+# レシピ用ブランチ(recipe/**)に push されると、画像が未生成のレシピの画像を gpt-image で作り、
+# 同じブランチにコミットする。GITHUB_TOKEN の push は他のワークフローを起動しないため、
+# 最後に CI を明示的に再実行する。
+
+on:
+  push:
+    branches:
+      - 'recipe/**'
+  workflow_dispatch:
+    inputs:
+      limit:
+        description: '1回に生成する最大枚数(最初の試験は 1)'
+        default: '12'
+
+permissions:
+  contents: write
+  actions: write
+
+concurrency:
+  group: images-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: 画像を生成
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          LIMIT: ${{ inputs.limit || '12' }}
+        run: npm run images -- --limit "$LIMIT"
+      - name: 生成した画像をコミットして CI を再実行
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BRANCH: ${{ github.ref_name }}
+        run: |
+          git add public/images/recipes
+          if git diff --cached --quiet; then
+            echo "追加する画像はありません"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "AI生成画像を追加"
+          git push origin "HEAD:${BRANCH}"
+          gh workflow run ci.yml --ref "${BRANCH}"

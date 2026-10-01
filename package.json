@@ -8,12 +8,14 @@
     "build": "astro build",
     "preview": "astro preview --host",
     "validate": "node scripts/validate-recipes.mjs",
-    "test": "node --test scripts/*.test.mjs"
+    "test": "node --test scripts/*.test.mjs",
+    "images": "node scripts/generate-images.mjs"
   },
   "dependencies": {
     "astro": "^7.3.5"
   },
   "devDependencies": {
-    "gray-matter": "^4.0.3"
+    "gray-matter": "^4.0.3",
+    "sharp": "^0.35.5"
   }
 }

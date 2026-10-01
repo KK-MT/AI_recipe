@@ -24,6 +24,8 @@ const recipes = defineCollection({
       src: z.string(),
       alt: z.string(),
       aiGenerated: z.literal(true),
+      // 画像生成用の見た目の説明(画像が未生成のレシピのみ。GitHub Actions が使う)
+      prompt: z.string().optional(),
     }),
     affiliate: z
       .array(
