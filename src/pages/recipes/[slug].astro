@@ -1,0 +1,81 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+export async function getStaticPaths() {
+  const recipes = await getCollection('recipes');
+  return recipes.map((recipe) => ({ params: { slug: recipe.id }, props: { recipe } }));
+}
+
+const { recipe } = Astro.props;
+const { data } = recipe;
+const { Content } = await render(recipe);
+
+const iso = (m: number) => `PT${m}M`;
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Recipe',
+  name: data.title,
+  description: data.description,
+  image: [new URL(data.image.src, Astro.site).href],
+  datePublished: data.publishedAt.toISOString().slice(0, 10),
+  author: { '@type': 'Organization', name: 'AIレシピ' },
+  recipeYield: `${data.servings}人分`,
+  prepTime: iso(data.prepMinutes),
+  cookTime: iso(data.cookMinutes),
+  totalTime: iso(data.prepMinutes + data.cookMinutes),
+  recipeIngredient: data.ingredients.map((i) => `${i.name} ${i.amount}`),
+  recipeInstructions: data.steps.map((text) => ({ '@type': 'HowToStep', text })),
+  keywords: data.tags.join(', '),
+};
+---
+<BaseLayout title={`${data.title} | AIレシピ`} description={data.description} image={data.image.src} type="article">
+  <script slot="head" type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+  <article>
+    <h1>{data.title}</h1>
+    <p><span class="badge">AI生成</span></p>
+    <img src={data.image.src} alt={data.image.alt} />
+    <p class="caption">AI生成画像</p>
+    <p>{data.description}</p>
+    <ul class="tags">
+      {data.tags.map((t) => <li><a href={`/tags/${encodeURIComponent(t)}/`}>{t}</a></li>)}
+    </ul>
+    <p>調理時間: 準備 {data.prepMinutes} 分 + 調理 {data.cookMinutes} 分 / {data.servings} 人分</p>
+
+    <h2>材料</h2>
+    <ul>
+      {data.ingredients.map((i) => <li>{i.name}: {i.amount}</li>)}
+    </ul>
+
+    <h2>作り方</h2>
+    <ol>
+      {data.steps.map((s) => <li>{s}</li>)}
+    </ol>
+
+    <h2>コツ</h2>
+    <p>{data.tips}</p>
+
+    <h2>アレルゲン(特定原材料)</h2>
+    <p>{data.allergens.length ? data.allergens.join('、') : '特定原材料7品目は使用していません'}</p>
+
+    <Content />
+
+    {data.affiliate && data.affiliate.length > 0 && (
+      <section class="affiliate">
+        <h2>使った道具・食材 <span class="badge">PR</span></h2>
+        <p class="caption">以下のリンクは広告(アフィリエイト)を含みます。</p>
+        <ul>
+          {data.affiliate.map((a) => (
+            <li>
+              <a href={a.url} rel="sponsored noopener" target="_blank">{a.label}</a>
+              ({a.provider === 'amazon' ? 'Amazon' : '楽天'})
+            </li>
+          ))}
+        </ul>
+      </section>
+    )}
+  </article>
+</BaseLayout>
+<style>
+  .affiliate { margin-top: 24px; padding: 12px 16px; border: 1px solid #eee; border-radius: 8px; }
+</style>

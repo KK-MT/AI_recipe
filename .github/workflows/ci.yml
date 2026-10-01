@@ -1,0 +1,28 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - claude/ai-recipe-auto-posting-xzbctl
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: テスト
+        run: npm test
+      - name: レシピ検証(リンク疎通を含む)
+        run: npm run validate -- --check-links
+      - name: ビルド
+        run: npm run build

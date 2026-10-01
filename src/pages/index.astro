@@ -1,0 +1,34 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const recipes = (await getCollection('recipes')).sort(
+  (a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf(),
+);
+---
+<BaseLayout title="AIレシピ">
+  <h1>新着レシピ</h1>
+  <ul class="cards">
+    {recipes.map((r) => (
+      <li>
+        <a href={`/recipes/${r.id}/`}>
+          <img src={r.data.image.src} alt={r.data.image.alt} loading="lazy" />
+          <p class="caption">AI生成画像</p>
+          <h2>{r.data.title}</h2>
+          <p>
+            <span class="badge">AI生成</span>
+            調理 {r.data.prepMinutes + r.data.cookMinutes} 分 / {r.data.servings} 人分
+          </p>
+        </a>
+        <ul class="tags">
+          {r.data.tags.map((t) => <li><a href={`/tags/${encodeURIComponent(t)}/`}>{t}</a></li>)}
+        </ul>
+      </li>
+    ))}
+  </ul>
+</BaseLayout>
+<style>
+  .cards { list-style: none; padding: 0; display: grid; gap: 24px; }
+  .cards > li > a { text-decoration: none; color: inherit; }
+  h2 { font-size: 1.125rem; margin: 4px 0; }
+</style>

@@ -71,3 +71,6 @@ scripts/validate-recipes.*      # 公開前検証(PRのCIで実行)
 - PRごとにVercelプレビューURLが発行され、スマホで表示崩れなし
 - Lighthouse(モバイル)で主要項目が良好
 - `git grep` でシークレットが含まれないこと
+
+## 実装状況: 検証(ステップ3)
+`npm run validate` で次を検査する(CIでも実行)。スキーマ・AI表記、画像の存在とalt、slug/タイトル重複、禁止表現、アレルゲン整合、加熱記述(警告)、アフィリエイトのURL/ドメイン整合、リンク疎通(`--check-links`)。ルールは `scripts/rules.json`。自動マージ(フェーズ2)は未実装で、ユーザーの指示後に別途設計する。
