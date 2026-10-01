@@ -1,0 +1,35 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+export async function getStaticPaths() {
+  const recipes = await getCollection('recipes');
+  const tags = [...new Set(recipes.flatMap((r) => r.data.tags))];
+  return tags.map((tag) => ({
+    params: { tag },
+    props: {
+      recipes: recipes
+        .filter((r) => r.data.tags.includes(tag))
+        .sort((a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf()),
+    },
+  }));
+}
+
+const { tag } = Astro.params;
+const { recipes } = Astro.props;
+---
+<BaseLayout title={`「${tag}」のレシピ | AIレシピ`} description={`「${tag}」のレシピ一覧`}>
+  <h1>「{tag}」のレシピ</h1>
+  <ul class="list">
+    {recipes.map((r) => (
+      <li>
+        <a href={`/recipes/${r.id}/`}>{r.data.title}</a>
+        <span class="badge">AI生成</span>
+      </li>
+    ))}
+  </ul>
+  <p><a href="/tags/">タグ一覧へ</a></p>
+</BaseLayout>
+<style>
+  .list { padding-left: 1.2em; }
+</style>

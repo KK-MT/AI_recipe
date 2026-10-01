@@ -48,7 +48,8 @@ npm run preview    # ビルド結果の確認
 
 - `src/content.config.ts`: レシピのスキーマ
 - `src/content/recipes/<slug>.md`: レシピ(1件1ファイル)。`sample-nikujaga.md` は表示確認用のサンプルで、公開前に削除する
-- `src/layouts/` / `src/pages/`: レイアウトとページ
+- `src/layouts/` / `src/pages/`: レイアウトとページ(一覧、レシピ詳細、`tags/`、`about`、`sitemap.xml`、`robots.txt`)
+- `SITE_URL`: サイトの公開URL(OGP・sitemap用)。未設定ならVercelの本番URL、なければ localhost
 - `public/images/recipes/`: レシピ画像
 - `docs/design.md`: 設計書
 

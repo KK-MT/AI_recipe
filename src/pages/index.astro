@@ -20,12 +20,15 @@ const recipes = (await getCollection('recipes')).sort(
             調理 {r.data.prepMinutes + r.data.cookMinutes} 分 / {r.data.servings} 人分
           </p>
         </a>
+        <ul class="tags">
+          {r.data.tags.map((t) => <li><a href={`/tags/${encodeURIComponent(t)}/`}>{t}</a></li>)}
+        </ul>
       </li>
     ))}
   </ul>
 </BaseLayout>
 <style>
   .cards { list-style: none; padding: 0; display: grid; gap: 24px; }
-  .cards a { text-decoration: none; color: inherit; }
+  .cards > li > a { text-decoration: none; color: inherit; }
   h2 { font-size: 1.125rem; margin: 4px 0; }
 </style>
