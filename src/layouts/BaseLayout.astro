@@ -1,0 +1,38 @@
+---
+interface Props {
+  title: string;
+  description?: string;
+}
+const { title, description = 'AIが作る料理レシピ' } = Astro.props;
+---
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <title>{title}</title>
+  </head>
+  <body>
+    <header class="site-header">
+      <a href="/">AIレシピ</a>
+    </header>
+    <main><slot /></main>
+    <footer class="site-footer">
+      <p>このサイトのレシピと画像はAIが生成しています。</p>
+    </footer>
+    <style is:global>
+      :root { --fg: #222; --bg: #fffdf8; --accent: #c2410c; --muted: #6b7280; }
+      * { box-sizing: border-box; }
+      body { margin: 0; font-family: system-ui, sans-serif; color: var(--fg); background: var(--bg); line-height: 1.7; }
+      a { color: var(--accent); }
+      img { max-width: 100%; height: auto; display: block; }
+      .site-header { padding: 12px 16px; border-bottom: 1px solid #eee; font-weight: bold; }
+      .site-header a { text-decoration: none; }
+      main { max-width: 720px; margin: 0 auto; padding: 16px; }
+      .site-footer { padding: 16px; text-align: center; color: var(--muted); font-size: 0.875rem; }
+      .badge { display: inline-block; padding: 2px 8px; border-radius: 999px; background: var(--accent); color: #fff; font-size: 0.75rem; }
+      .caption { color: var(--muted); font-size: 0.75rem; margin: 4px 0 0; }
+    </style>
+  </body>
+</html>

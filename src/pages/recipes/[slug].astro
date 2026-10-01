@@ -1,0 +1,41 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+export async function getStaticPaths() {
+  const recipes = await getCollection('recipes');
+  return recipes.map((recipe) => ({ params: { slug: recipe.id }, props: { recipe } }));
+}
+
+const { recipe } = Astro.props;
+const { data } = recipe;
+const { Content } = await render(recipe);
+---
+<BaseLayout title={`${data.title} | AIレシピ`} description={data.description}>
+  <article>
+    <h1>{data.title}</h1>
+    <p><span class="badge">AI生成</span></p>
+    <img src={data.image.src} alt={data.image.alt} />
+    <p class="caption">AI生成画像</p>
+    <p>{data.description}</p>
+    <p>調理時間: 準備 {data.prepMinutes} 分 + 調理 {data.cookMinutes} 分 / {data.servings} 人分</p>
+
+    <h2>材料</h2>
+    <ul>
+      {data.ingredients.map((i) => <li>{i.name}: {i.amount}</li>)}
+    </ul>
+
+    <h2>作り方</h2>
+    <ol>
+      {data.steps.map((s) => <li>{s}</li>)}
+    </ol>
+
+    <h2>コツ</h2>
+    <p>{data.tips}</p>
+
+    <h2>アレルゲン(特定原材料)</h2>
+    <p>{data.allergens.length ? data.allergens.join('、') : '特定原材料7品目は使用していません'}</p>
+
+    <Content />
+  </article>
+</BaseLayout>

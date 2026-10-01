@@ -39,7 +39,18 @@ AIで料理レシピを作成し、WEBで公開するプロジェクト。担当
 
 ## コマンド / ディレクトリ構成
 
-実装後に追記する(TODO)。
+```
+npm install        # 依存インストール(Node 22 / npm)
+npm run dev        # 開発サーバー(スマホ確認用に 0.0.0.0 で待受)
+npm run build      # 静的ビルド(dist/)。スキーマ違反・AI生成表記の欠落はここで失敗する
+npm run preview    # ビルド結果の確認
+```
+
+- `src/content.config.ts`: レシピのスキーマ
+- `src/content/recipes/<slug>.md`: レシピ(1件1ファイル)。`sample-nikujaga.md` は表示確認用のサンプルで、公開前に削除する
+- `src/layouts/` / `src/pages/`: レイアウトとページ
+- `public/images/recipes/`: レシピ画像
+- `docs/design.md`: 設計書
 
 ## 参照
 
