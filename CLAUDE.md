@@ -44,12 +44,16 @@ npm install        # 依存インストール(Node 22 / npm)
 npm run dev        # 開発サーバー(スマホ確認用に 0.0.0.0 で待受)
 npm run build      # 静的ビルド(dist/)。スキーマ違反・AI生成表記の欠落はここで失敗する
 npm run preview    # ビルド結果の確認
+npm test           # 検証スクリプトの単体テスト
+npm run validate   # レシピ検証(--check-links を付けるとアフィリエイトのリンク疎通も確認)
 ```
 
 - `src/content.config.ts`: レシピのスキーマ
 - `src/content/recipes/<slug>.md`: レシピ(1件1ファイル)。`sample-nikujaga.md` は表示確認用のサンプルで、公開前に削除する
 - `src/layouts/` / `src/pages/`: レイアウトとページ(一覧、レシピ詳細、`tags/`、`about`、`sitemap.xml`、`robots.txt`)
 - `SITE_URL`: サイトの公開URL(OGP・sitemap用)。未設定ならVercelの本番URL、なければ localhost
+- `scripts/`: レシピ検証(`validate-recipes.mjs`)とそのテスト。禁止表現・アレルゲン対応表は `rules.json`
+- `.github/workflows/ci.yml`: PR・pushで test → validate(リンク疎通) → build を実行
 - `public/images/recipes/`: レシピ画像
 - `docs/design.md`: 設計書
 
