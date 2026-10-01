@@ -45,7 +45,8 @@ export function checkRecipe(r, { publicDir = path.join(root, 'public') } = {}) {
     if (!d.image.src) {
       out.push(err('image.src がありません'));
     } else if (!fs.existsSync(path.join(publicDir, d.image.src))) {
-      out.push(err(`画像ファイルが見つかりません: public${d.image.src}`));
+      const hint = d.image.prompt ? '(image.prompt があるので画像生成の実行待ちです)' : '(image.prompt も無いため生成できません)';
+      out.push(err(`画像ファイルが見つかりません: public${d.image.src}${hint}`));
     }
   }
 

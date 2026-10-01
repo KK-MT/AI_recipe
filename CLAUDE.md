@@ -46,6 +46,7 @@ npm run build      # 静的ビルド(dist/)。スキーマ違反・AI生成表�
 npm run preview    # ビルド結果の確認
 npm test           # 検証スクリプトの単体テスト
 npm run validate   # レシピ検証(--check-links を付けるとアフィリエイトのリンク疎通も確認)
+npm run images     # 画像が未生成のレシピの画像を生成(OPENAI_API_KEY が必要。通常は Actions が実行)
 ```
 
 - `src/content.config.ts`: レシピのスキーマ
@@ -53,6 +54,7 @@ npm run validate   # レシピ検証(--check-links を付けるとアフィリ�
 - `src/layouts/` / `src/pages/`: レイアウトとページ(一覧、レシピ詳細、`tags/`、`about`、`sitemap.xml`、`robots.txt`)
 - `SITE_URL`: サイトの公開URL(OGP・sitemap用)。未設定ならVercelの本番URL、なければ localhost
 - `scripts/`: レシピ検証(`validate-recipes.mjs`)とそのテスト。禁止表現・アレルゲン対応表は `rules.json`
+- `.github/workflows/images.yml`: `recipe/**` ブランチへの push で画像を生成してコミットし、CIを再実行(キーは GitHub Secrets の `OPENAI_API_KEY`)
 - `.github/workflows/ci.yml`: PR・pushで test → validate(リンク疎通) → build を実行
 - `public/images/recipes/`: レシピ画像
 - `docs/design.md`: 設計書
