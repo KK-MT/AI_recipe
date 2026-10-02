@@ -24,12 +24,19 @@ export function findPending(recipes, publicDir = path.join(root, 'public')) {
 
 const redact = (text, apiKey) => (apiKey ? String(text).split(apiKey).join('***') : String(text));
 
-export async function requestImage({ prompt, apiKey, model = 'gpt-image-1', fetchImpl = fetch }) {
-  const res = await fetchImpl('https://api.openai.com/v1/images/generations', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${apiKey}` },
-    body: JSON.stringify({ model, prompt, size: style.size, quality: style.quality, n: 1 }),
-  });
+export async function requestImage({ prompt, apiKey, model = 'gpt-image-1', fetchImpl = fetch, timeoutMs = 120000 }) {
+  let res;
+  try {
+    res = await fetchImpl('https://api.openai.com/v1/images/generations', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${apiKey}` },
+      body: JSON.stringify({ model, prompt, size: style.size, quality: style.quality, n: 1 }),
+      signal: AbortSignal.timeout(timeoutMs),
+    });
+  } catch (e) {
+    if (e?.name === 'TimeoutError') throw new Error(`OpenAI API の応答がタイムアウトしました(${timeoutMs / 1000}秒)`);
+    throw e;
+  }
   const json = await res.json().catch(() => ({}));
   if (!res.ok) throw new Error(`OpenAI API エラー(${res.status}): ${redact(json?.error?.message ?? '詳細なし', apiKey)}`);
   const b64 = json?.data?.[0]?.b64_json;

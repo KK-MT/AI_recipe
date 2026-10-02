@@ -67,3 +67,15 @@ test('失敗しても残りを続け、ログにキーが出ない', async () =>
   assert.ok(!logs.join('\n').includes(KEY));
   assert.ok(logs.join('\n').includes('***'));
 });
+
+test('応答が返らないときはタイムアウトで失敗する', async () => {
+  const slow = (url, init) =>
+    new Promise((_, reject) => {
+      const keepAlive = setTimeout(() => {}, 5000); // テスト中にイベントループが空にならないように
+      init.signal.addEventListener('abort', () => {
+        clearTimeout(keepAlive);
+        reject(init.signal.reason);
+      });
+    });
+  await assert.rejects(requestImage({ prompt: 'p', apiKey: KEY, fetchImpl: slow, timeoutMs: 20 }), /タイムアウト/);
+});

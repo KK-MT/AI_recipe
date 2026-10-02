@@ -50,7 +50,7 @@ npm run images     # 画像が未生成のレシピの画像を生成(OPENAI_API
 ```
 
 - `src/content.config.ts`: レシピのスキーマ
-- `src/content/recipes/<slug>.md`: レシピ(1件1ファイル)。`sample-nikujaga.md` は表示確認用のサンプルで、公開前に削除する
+- `src/content/recipes/<slug>.md`: レシピ(1件1ファイル)
 - `src/layouts/` / `src/pages/`: レイアウトとページ(一覧、レシピ詳細、`tags/`、`about`、`sitemap.xml`、`robots.txt`)
 - `SITE_URL`: サイトの公開URL(OGP・sitemap用)。未設定ならVercelの本番URL、なければ localhost
 - `scripts/`: レシピ検証(`validate-recipes.mjs`)とそのテスト。禁止表現・アレルゲン対応表は `rules.json`
