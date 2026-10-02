@@ -10,17 +10,21 @@ const recipes = (await getCollection('recipes')).sort(
   <h1>新着レシピ</h1>
   <ul class="cards">
     {recipes.map((r) => (
-      <li>
-        <a href={`/recipes/${r.id}/`}>
-          <img src={r.data.image.src} alt={r.data.image.alt} loading="lazy" />
-          <p class="caption">AI生成画像</p>
-          <h2>{r.data.title}</h2>
-          <p>
-            <span class="badge">AI生成</span>
-            調理 {r.data.prepMinutes + r.data.cookMinutes} 分 / {r.data.servings} 人分
-          </p>
+      <li class="card">
+        <a class="card-link" href={`/recipes/${r.id}/`}>
+          <div class="thumb">
+            <img src={r.data.image.src} alt={r.data.image.alt} loading="lazy" />
+            <span class="thumb-label">AI生成画像</span>
+          </div>
+          <div class="card-body">
+            <h2>{r.data.title}</h2>
+            <p class="meta">
+              <span class="badge">AI生成</span>
+              調理 {r.data.prepMinutes + r.data.cookMinutes} 分 / {r.data.servings} 人分
+            </p>
+          </div>
         </a>
-        <ul class="tags">
+        <ul class="tags card-tags">
           {r.data.tags.map((t) => <li><a href={`/tags/${encodeURIComponent(t)}/`}>{t}</a></li>)}
         </ul>
       </li>
@@ -28,7 +32,16 @@ const recipes = (await getCollection('recipes')).sort(
   </ul>
 </BaseLayout>
 <style>
-  .cards { list-style: none; padding: 0; display: grid; gap: 24px; }
-  .cards > li > a { text-decoration: none; color: inherit; }
-  h2 { font-size: 1.125rem; margin: 4px 0; }
+  .cards { list-style: none; padding: 0; margin: 0; display: grid; gap: 20px; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+  .card { background: #fff; border: 1px solid #e5e1d8; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08); display: flex; flex-direction: column; transition: box-shadow 0.15s; }
+  .card:hover { box-shadow: 0 4px 12px rgba(0, 0, 0, 0.14); }
+  .card-link { display: block; color: inherit; text-decoration: none; flex: 1; }
+  .card-link:focus-visible { outline: 3px solid var(--accent); outline-offset: -3px; }
+  .thumb { position: relative; aspect-ratio: 3 / 2; background: #eee; }
+  .thumb img { width: 100%; height: 100%; object-fit: cover; }
+  .thumb-label { position: absolute; left: 8px; bottom: 8px; padding: 1px 8px; border-radius: 999px; background: rgba(0, 0, 0, 0.6); color: #fff; font-size: 0.6875rem; }
+  .card-body { padding: 12px 16px 4px; }
+  h2 { font-size: 1.125rem; margin: 0 0 4px; line-height: 1.4; }
+  .meta { margin: 0 0 8px; font-size: 0.875rem; color: var(--muted); }
+  .card-tags { margin: 0; padding: 0 16px 14px; }
 </style>
