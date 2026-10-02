@@ -46,6 +46,7 @@ npm run build      # 静的ビルド(dist/)。スキーマ違反・AI生成表�
 npm run preview    # ビルド結果の確認
 npm test           # 検証スクリプトの単体テスト
 npm run validate   # レシピ検証(--check-links を付けるとアフィリエイトのリンク疎通も確認)
+npm run recipe:status # 自動投稿の判断材料(日付・最新レシピ・タグ別件数)を表示
 npm run images     # 画像が未生成のレシピの画像を生成(OPENAI_API_KEY が必要。通常は Actions が実行)
 ```
 
@@ -56,6 +57,7 @@ npm run images     # 画像が未生成のレシピの画像を生成(OPENAI_API
 - `scripts/`: レシピ検証(`validate-recipes.mjs`)とそのテスト。禁止表現・アレルゲン対応表は `rules.json`
 - `.github/workflows/images.yml`: `recipe/**` ブランチへの push で画像を生成してコミットし、CIを再実行(キーは GitHub Secrets の `OPENAI_API_KEY`)
 - `.github/workflows/ci.yml`: PR・pushで test → validate(リンク疎通) → build を実行
+- `docs/auto-post.md`: 自動投稿(Routine)の手順書。`docs/recipe-ideas.md`: 作ってほしい料理のリスト
 - `public/images/recipes/`: レシピ画像
 - `docs/design.md`: 設計書
 

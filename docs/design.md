@@ -77,3 +77,6 @@ scripts/validate-recipes.*      # 公開前検証(PRのCIで実行)
 
 ## 実装状況: 画像生成
 Claude Code の実行環境は OpenAI に接続できないため、画像は GitHub Actions で生成する。`recipe/**` ブランチへの push で `images.yml` が `npm run images` を実行し、未生成の画像(`image.prompt` があるレシピ)を gpt-image で作って同じブランチにコミットし、CI を再実行する。キーは GitHub Secrets の `OPENAI_API_KEY` のみ。最初のCIは画像が無く赤になり、画像コミット後の再実行で緑になる。
+
+## 実装状況: 自動投稿
+Routine(スケジュール実行)が毎日 6:07(日本時間)に新しいセッションを起動し、`docs/auto-post.md` に従って、レシピ1件を `recipe/<slug>` ブランチに push して PR を作る(最新レシピから2日未満ならスキップ)。画像は `images.yml` が生成する。マージはユーザーが行う(フェーズ1)。判断材料は `npm run recipe:status`、ユーザーの希望は `docs/recipe-ideas.md`。

@@ -9,7 +9,8 @@
     "preview": "astro preview --host",
     "validate": "node scripts/validate-recipes.mjs",
     "test": "node --test scripts/*.test.mjs",
-    "images": "node scripts/generate-images.mjs"
+    "images": "node scripts/generate-images.mjs",
+    "recipe:status": "node scripts/recipe-status.mjs"
   },
   "dependencies": {
     "astro": "^7.3.5"
