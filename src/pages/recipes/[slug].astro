@@ -1,6 +1,7 @@
 ---
 import { getCollection, render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { affiliateIds, shoppingLinks } from '../../lib/affiliate.mjs';
 
 export async function getStaticPaths() {
   const recipes = await getCollection('recipes');
@@ -10,6 +11,7 @@ export async function getStaticPaths() {
 const { recipe } = Astro.props;
 const { data } = recipe;
 const { Content } = await render(recipe);
+const shop = shoppingLinks(data.shopping, affiliateIds());
 
 const iso = (m: number) => `PT${m}M`;
 const jsonLd = {
@@ -60,15 +62,19 @@ const jsonLd = {
 
     <Content />
 
-    {data.affiliate && data.affiliate.length > 0 && (
-      <section class="affiliate">
-        <h2>使った道具・食材 <span class="badge">PR</span></h2>
-        <p class="caption">以下のリンクは広告(アフィリエイト)を含みます。</p>
+    {shop.length > 0 && (
+      <section class="shopping">
+        <h2>使った道具・材料 <span class="badge">PR</span></h2>
+        <p class="caption">※広告(アフィリエイト)を含みます。価格・在庫は、各ショップでご確認ください。</p>
         <ul>
-          {data.affiliate.map((a) => (
+          {shop.map((item) => (
             <li>
-              <a href={a.url} rel="sponsored noopener" target="_blank">{a.label}</a>
-              ({a.provider === 'amazon' ? 'Amazon' : '楽天'})
+              <span class="shop-label">{item.label}</span>
+              <span class="shop-links">
+                {item.links.map((l) => (
+                  <a href={l.url} rel="sponsored nofollow noopener" target="_blank">{l.name}</a>
+                ))}
+              </span>
             </li>
           ))}
         </ul>
@@ -77,5 +83,11 @@ const jsonLd = {
   </article>
 </BaseLayout>
 <style>
-  .affiliate { margin-top: 24px; padding: 12px 16px; border: 1px solid #eee; border-radius: 8px; }
+  .shopping { margin-top: 24px; padding: 12px 16px; border: 1px solid #e5e1d8; border-radius: 8px; background: #fff; }
+  .shopping h2 { margin-top: 0; }
+  .shopping ul { list-style: none; padding: 0; margin: 8px 0 0; display: grid; gap: 10px; }
+  .shopping li { display: block; }
+  .shop-label { display: block; font-weight: bold; margin-bottom: 4px; }
+  .shop-links { display: flex; flex-wrap: wrap; gap: 8px; }
+  .shop-links a { display: inline-block; padding: 4px 12px; border: 1px solid var(--accent); border-radius: 999px; font-size: 0.8125rem; text-decoration: none; }
 </style>

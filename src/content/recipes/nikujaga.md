@@ -25,6 +25,8 @@ steps:
 tags: ["和食", "主菜", "煮物", "牛肉"]
 allergens: []
 tips: "煮崩れを防ぐには、煮ている間はあまり混ぜません。火を止めて置く間に、味がしみ込みます。しょうゆ・みそは大豆を原料にしています。市販の調味料は原材料表示を確認してください。"
+shopping:
+  - { label: "落とし蓋", keyword: "落とし蓋 ステンレス" }
 aiGenerated: true
 image:
   src: "/images/recipes/nikujaga.webp"

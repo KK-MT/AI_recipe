@@ -23,7 +23,7 @@ jobs:
       - run: npm ci
       - name: テスト
         run: npm test
-      - name: レシピ検証(リンク疎通を含む)
-        run: npm run validate -- --check-links
+      - name: レシピ検証
+        run: npm run validate
       - name: ビルド
         run: npm run build

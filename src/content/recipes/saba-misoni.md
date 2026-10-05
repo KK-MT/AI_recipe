@@ -24,6 +24,8 @@ steps:
 tags: ["和食", "主菜", "魚", "煮物"]
 allergens: []
 tips: "熱湯をかけるひと手間で、魚の臭みが抑えられます。味噌は煮汁でのばしてから加えると、ダマになりません。さばは中心まで火を通してください。味噌・しょうゆは大豆を原料にしています。市販の調味料は原材料表示を確認してください。"
+shopping:
+  - { label: "落とし蓋", keyword: "落とし蓋 ステンレス" }
 aiGenerated: true
 image:
   src: "/images/recipes/saba-misoni.webp"

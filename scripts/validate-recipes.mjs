@@ -1,4 +1,4 @@
-// レシピの公開前検証。使い方: node scripts/validate-recipes.mjs [--check-links]
+// レシピの公開前検証。使い方: node scripts/validate-recipes.mjs
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -73,21 +73,23 @@ export function checkRecipe(r, { publicDir = path.join(root, 'public') } = {}) {
     out.push(warn(`材料に「${needsHeat}」がありますが、手順に加熱の記述が見当たりません`));
   }
 
-  // アフィリエイト
-  for (const a of d.affiliate ?? []) {
-    let url;
-    try {
-      url = new URL(a.url);
-    } catch {
-      out.push(err(`アフィリエイトURLが不正です: ${a.url}`));
-      continue;
-    }
-    if (url.protocol !== 'https:') out.push(err(`アフィリエイトURLが https ではありません: ${a.url}`));
-    const domains = rules.affiliateDomains[a.provider];
-    if (!domains) {
-      out.push(err(`provider が不正です: ${a.provider}`));
-    } else if (!domains.some((dm) => url.hostname === dm || url.hostname.endsWith(`.${dm}`))) {
-      out.push(err(`provider「${a.provider}」とURLのドメインが一致しません: ${url.hostname}`));
+  // 買い物リンク用の検索キーワード(リンクはサイトが作る。URLや禁止表現は書かせない)
+  const shopping = d.shopping ?? [];
+  if (!Array.isArray(shopping)) {
+    out.push(err('shopping が配列ではありません'));
+  } else {
+    if (shopping.length > 3) out.push(err(`shopping は最大3件です(${shopping.length}件)`));
+    for (const [i, item] of shopping.entries()) {
+      for (const key of ['label', 'keyword']) {
+        const v = String(item?.[key] ?? '').trim();
+        if (!v) out.push(err(`shopping[${i}].${key} が空です`));
+        else if (v.length > 30) out.push(err(`shopping[${i}].${key} は30字以内にしてください`));
+        else if (/https?:|\/\//i.test(v)) out.push(err(`shopping[${i}].${key} にURLは書けません(検索キーワードだけにしてください)`));
+        else {
+          const hit = rules.forbiddenTerms.find((t) => v.includes(t));
+          if (hit) out.push(err(`shopping[${i}].${key} に禁止表現「${hit}」が含まれています`));
+        }
+      }
     }
   }
   return out;
@@ -108,34 +110,11 @@ export function checkDuplicates(recipes) {
   return out;
 }
 
-// リンク疎通: 404/410/名前解決失敗はエラー、403/429/5xx/タイムアウトは警告
-export async function checkLink(url, fetchImpl = fetch) {
-  const opts = { redirect: 'follow', signal: AbortSignal.timeout(10000), headers: { 'User-Agent': 'Mozilla/5.0 (recipe-link-check)' } };
-  try {
-    let res = await fetchImpl(url, { ...opts, method: 'HEAD' });
-    if (res.status === 405 || res.status === 403) res = await fetchImpl(url, { ...opts, method: 'GET' });
-    if (res.status === 404 || res.status === 410) return err(`リンク切れ(${res.status}): ${url}`);
-    if (res.status >= 400) return warn(`リンクを確認できませんでした(${res.status}): ${url}`);
-    return null;
-  } catch (e) {
-    const code = e?.cause?.code ?? e?.code;
-    if (code === 'ENOTFOUND') return err(`名前解決に失敗しました: ${url}`);
-    return warn(`リンクを確認できませんでした(${e?.name ?? 'error'}): ${url}`);
-  }
-}
-
 async function main() {
-  const checkLinks = process.argv.includes('--check-links');
   const recipes = loadRecipes();
   const results = [];
   for (const r of recipes) {
     for (const p of checkRecipe(r)) results.push({ slug: r.slug, ...p });
-    if (checkLinks) {
-      for (const a of r.data.affiliate ?? []) {
-        const p = await checkLink(a.url);
-        if (p) results.push({ slug: r.slug, ...p });
-      }
-    }
   }
   results.push(...checkDuplicates(recipes));
 

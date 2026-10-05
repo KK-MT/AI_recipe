@@ -1,4 +1,6 @@
 ---
+import { affiliateIds, hasProvider } from '../lib/affiliate.mjs';
+
 interface Props {
   title: string;
   description?: string;
@@ -8,6 +10,7 @@ interface Props {
 const { title, description = 'AIが作る料理レシピ', image, type = 'website' } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const ogImage = image ? new URL(image, Astro.site).href : undefined;
+const ids = affiliateIds();
 ---
 <!doctype html>
 <html lang="ja">
@@ -39,6 +42,10 @@ const ogImage = image ? new URL(image, Astro.site).href : undefined;
     <main><slot /></main>
     <footer class="site-footer">
       <p>このサイトのレシピと画像はAIが生成しています。</p>
+      {hasProvider(ids) && (
+        <p>当サイトには、アフィリエイト広告({[ids.rakuten && '楽天アフィリエイト', ids.amazon && 'Amazonアソシエイト'].filter(Boolean).join('、')})へのリンクが含まれます。</p>
+      )}
+      {ids.amazon && <p>Amazonのアソシエイトとして、適格販売により収入を得ています。</p>}
     </footer>
     <style is:global>
       :root { --fg: #222; --bg: #fffdf8; --accent: #c2410c; --muted: #6b7280; }

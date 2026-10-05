@@ -24,6 +24,8 @@ steps:
 tags: ["和食", "丼", "鶏肉", "卵"]
 allergens: ["卵"]
 tips: "卵は液体の部分がなくなる程度に火を通してください。小さなお子さんや妊娠中の方、体調のすぐれない方は、卵をしっかり加熱します。しょうゆ・みそは大豆を原料にしています。市販の調味料は原材料表示を確認してください。"
+shopping:
+  - { label: "親子鍋", keyword: "親子鍋" }
 aiGenerated: true
 image:
   src: "/images/recipes/oyakodon.webp"

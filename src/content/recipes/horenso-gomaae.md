@@ -20,6 +20,8 @@ steps:
 tags: ["和食", "副菜", "野菜"]
 allergens: []
 tips: "ほうれん草は、ゆでたあとにしっかり水気を絞ると、衣が水っぽくなりません。ごまは、特定原材料に準ずる品目です。アレルギーのある方は、ご注意ください。しょうゆ・みそは大豆を原料にしています。市販の調味料は原材料表示を確認してください。"
+shopping:
+  - { label: "白すりごま", keyword: "白すりごま" }
 aiGenerated: true
 image:
   src: "/images/recipes/horenso-gomaae.webp"

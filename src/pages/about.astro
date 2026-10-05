@@ -1,5 +1,8 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { affiliateIds, hasProvider } from '../lib/affiliate.mjs';
+
+const ids = affiliateIds();
 ---
 <BaseLayout title="このサイトについて | AIレシピ" description="AIが作る料理レシピサイトについての説明です。">
   <h1>このサイトについて</h1>
@@ -17,9 +20,15 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     加熱が必要な食材は、中心まで十分に加熱してください。
   </p>
 
-  <h2>広告について</h2>
-  <p>
-    一部のレシピに、Amazon・楽天のアフィリエイトリンクを掲載しています。
-    広告を含むリンクには「PR」と表示します。リンクからの購入により、当サイトが報酬を得ることがあります。
-  </p>
+  {hasProvider(ids) && (
+    <>
+      <h2>広告について</h2>
+      <p>
+        一部のレシピに、{[ids.rakuten && '楽天アフィリエイト', ids.amazon && 'Amazonアソシエイト'].filter(Boolean).join('、')}のリンクを掲載しています。
+        広告を含むリンクには「PR」と表示します。リンクから購入すると、当サイトが報酬を得ることがあります。
+        価格や在庫は、各ショップでご確認ください。
+      </p>
+      {ids.amazon && <p>Amazonのアソシエイトとして、適格販売により収入を得ています。</p>}
+    </>
+  )}
 </BaseLayout>

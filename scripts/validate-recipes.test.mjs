@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { checkRecipe, checkDuplicates, checkLink, loadRecipes } from './validate-recipes.mjs';
+import { checkRecipe, checkDuplicates, loadRecipes } from './validate-recipes.mjs';
 
 // 画像ファイルがある状態を作るための一時の public ディレクトリ
 const publicDir = fs.mkdtempSync(path.join(os.tmpdir(), 'pub-'));
@@ -88,16 +88,29 @@ test('加熱の記述が無いと警告', () => {
   assert.equal(w.length, 1);
 });
 
-test('アフィリエイトのドメイン・https を検査する', () => {
+test('shopping: 正常なキーワードはエラーなし', () => {
   const r = base();
-  r.data.affiliate = [
-    { label: 'a', url: 'https://example.com/x', provider: 'amazon' },
-    { label: 'b', url: 'http://www.amazon.co.jp/x', provider: 'amazon' },
-    { label: 'c', url: 'https://www.amazon.co.jp/x', provider: 'amazon' },
+  r.data.shopping = [{ label: '落とし蓋', keyword: '落とし蓋 ステンレス' }];
+  assert.deepEqual(errors(r), []);
+});
+
+test('shopping: 4件以上・空・長すぎる・URL・禁止表現はエラー', () => {
+  const r = base();
+  r.data.shopping = [
+    { label: 'a', keyword: 'b' },
+    { label: 'a', keyword: 'b' },
+    { label: 'a', keyword: 'b' },
+    { label: '', keyword: 'b' },
   ];
   const e = errors(r);
-  assert.equal(e.filter((m) => m.includes('ドメイン')).length, 1);
-  assert.equal(e.filter((m) => m.includes('https ではありません')).length, 1);
+  assert.ok(e.some((m) => m.includes('最大3件')));
+  assert.ok(e.some((m) => m.includes('label が空')));
+  r.data.shopping = [{ label: 'あ'.repeat(31), keyword: 'https://example.com/x' }];
+  const e2 = errors(r);
+  assert.ok(e2.some((m) => m.includes('30字以内')));
+  assert.ok(e2.some((m) => m.includes('URLは書けません')));
+  r.data.shopping = [{ label: '病気が治る', keyword: 'お茶' }];
+  assert.ok(errors(r).some((m) => m.includes('禁止表現')));
 });
 
 test('slug・タイトルの重複を検出する', () => {
@@ -105,15 +118,4 @@ test('slug・タイトルの重複を検出する', () => {
   const b = { ...base(), slug: 'other' };
   assert.equal(checkDuplicates([a, b]).length, 1);
   assert.equal(checkDuplicates([a, { ...a }]).length, 2);
-});
-
-test('リンク疎通: 404 はエラー、403/タイムアウトは警告、200 は問題なし', async () => {
-  const mk = (status) => async () => ({ status });
-  assert.equal((await checkLink('https://x', mk(404))).level, 'error');
-  assert.equal((await checkLink('https://x', mk(503))).level, 'warn');
-  assert.equal(await checkLink('https://x', mk(200)), null);
-  const dns = async () => { throw Object.assign(new Error('x'), { cause: { code: 'ENOTFOUND' } }); };
-  assert.equal((await checkLink('https://x', dns)).level, 'error');
-  const to = async () => { throw Object.assign(new Error('x'), { name: 'TimeoutError' }); };
-  assert.equal((await checkLink('https://x', to)).level, 'warn');
 });

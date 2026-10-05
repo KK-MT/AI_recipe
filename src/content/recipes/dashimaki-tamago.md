@@ -23,6 +23,9 @@ steps:
 tags: ["和食", "卵料理", "卵"]
 allergens: ["卵"]
 tips: "卵液は混ぜすぎず、白身を切る程度にします。中までしっかり火を通してください。しょうゆ・みそは大豆を原料にしています。市販の調味料は原材料表示を確認してください。"
+shopping:
+  - { label: "卵焼き器", keyword: "卵焼き器" }
+  - { label: "巻きす", keyword: "巻きす 卵焼き" }
 aiGenerated: true
 image:
   src: "/images/recipes/dashimaki-tamago.webp"
