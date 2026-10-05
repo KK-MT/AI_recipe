@@ -28,7 +28,7 @@ AIで料理レシピを作成し、WEBで公開するプロジェクト。担当
   - 最初の数週間: PRをユーザーがスマホの GitHub アプリでマージして公開する。
   - その後: 検証に通ったものを自動マージへ移行する。移行はユーザーの指示があるまで行わない。
 - 画像は OpenAI 画像生成(gpt-image)で作る。APIキーはシークレット管理する。
-- 収益は Amazon / 楽天アフィリエイト。リンクには PR 表記を付ける。
+- 収益は Amazon / 楽天アフィリエイト。レシピには検索キーワード(`shopping`)だけを書き、リンクはサイトが自動で作る。リンクには PR 表記を付ける。
 - 「AI生成」であることを全記事・画像に明記する。
 
 ## 開発ルール
@@ -45,7 +45,7 @@ npm run dev        # 開発サーバー(スマホ確認用に 0.0.0.0 で待受)
 npm run build      # 静的ビルド(dist/)。スキーマ違反・AI生成表記の欠落はここで失敗する
 npm run preview    # ビルド結果の確認
 npm test           # 検証スクリプトの単体テスト
-npm run validate   # レシピ検証(--check-links を付けるとアフィリエイトのリンク疎通も確認)
+npm run validate   # レシピ検証(スキーマ・AI表記・画像・アレルゲン・禁止表現・買い物キーワードなど)
 npm run recipe:status # 自動投稿の判断材料(日付・最新レシピ・タグ別件数)を表示
 npm run images     # 画像が未生成のレシピの画像を生成(OPENAI_API_KEY が必要。通常は Actions が実行)
 ```
@@ -54,9 +54,11 @@ npm run images     # 画像が未生成のレシピの画像を生成(OPENAI_API
 - `src/content/recipes/<slug>.md`: レシピ(1件1ファイル)
 - `src/layouts/` / `src/pages/`: レイアウトとページ(一覧、レシピ詳細、`tags/`、`about`、`sitemap.xml`、`robots.txt`)
 - `SITE_URL`: サイトの公開URL(OGP・sitemap用)。未設定ならVercelの本番URL、なければ localhost
+- `RAKUTEN_AFFILIATE_ID` / `AMAZON_TRACKING_ID`: アフィリエイトID(Vercelの環境変数。ProductionとPreview)。未設定のサービスのリンクは表示しない。IDは秘密情報ではないが、コードには書かない
+- `src/lib/affiliate.mjs`: アフィリエイトリンクの生成(レシピの `shopping` の検索キーワードから作る)
 - `scripts/`: レシピ検証(`validate-recipes.mjs`)とそのテスト。禁止表現・アレルゲン対応表は `rules.json`
 - `.github/workflows/images.yml`: `recipe/**` ブランチへの push で画像を生成してコミットし、CIを再実行(キーは GitHub Secrets の `OPENAI_API_KEY`)
-- `.github/workflows/ci.yml`: PR・pushで test → validate(リンク疎通) → build を実行
+- `.github/workflows/ci.yml`: PR・pushで test → validate → build を実行
 - `docs/auto-post.md`: 自動投稿(Routine)の手順書。`docs/recipe-ideas.md`: 作ってほしい料理のリスト
 - `public/images/recipes/`: レシピ画像
 - `docs/design.md`: 設計書

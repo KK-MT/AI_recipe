@@ -27,14 +27,10 @@ const recipes = defineCollection({
       // 画像生成用の見た目の説明(画像が未生成のレシピのみ。GitHub Actions が使う)
       prompt: z.string().optional(),
     }),
-    affiliate: z
-      .array(
-        z.object({
-          label: z.string(),
-          url: z.string().url(),
-          provider: z.enum(['amazon', 'rakuten']),
-        }),
-      )
+    // 使った道具・特別な材料。検索キーワードだけを書く(リンクはサイトが自動で作る)
+    shopping: z
+      .array(z.object({ label: z.string().min(1).max(30), keyword: z.string().min(1).max(30) }))
+      .max(3)
       .optional(),
   }),
 });

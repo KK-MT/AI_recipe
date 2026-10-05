@@ -29,7 +29,7 @@ scripts/validate-recipes.*      # 公開前検証(PRのCIで実行)
 
 ## 2. レシピのデータ設計(フロントマター)
 必須: `title`, `description`, `publishedAt`, `servings`(人数), `prepMinutes`, `cookMinutes`, `ingredients[{name, amount}]`, `steps[]`, `tags[]`, `allergens[]`(法定表示7品目+推奨など), `tips`, `aiGenerated: true`, `image{src, alt, aiGenerated: true}`
-任意: `affiliate[{label, url, provider: amazon|rakuten}]`
+任意: `shopping[{label, keyword}]`(最大3件。検索キーワードだけを書き、アフィリエイトリンクはサイトが生成する)
 - `aiGenerated` が true 以外はビルドエラーにする(AI生成明記を強制)。
 - スキーマ違反はビルド失敗 → PRのプレビューが作られず、マージ前に気付ける。
 
@@ -45,7 +45,7 @@ scripts/validate-recipes.*      # 公開前検証(PRのCIで実行)
 4. ブランチ `recipe/<slug>` にコミット、PR作成(概要・アレルゲン・チェック結果を記載)。
 5. VercelがプレビューURLを発行 → ユーザーがスマホで確認して承認(マージ)。
 6. マージ後Vercelが本番デプロイ。
-- フェーズ2: PRのCIで検証(スキーマ、AI表記、リンク疎通、画像存在、禁止表現)が全通過した場合のみ自動マージ。ユーザーの指示が出るまで有効化しない。
+- フェーズ2: PRのCIで検証(スキーマ、AI表記、画像存在、アレルゲン、禁止表現など。リンクの疎通確認は、アフィリエイトをサイトが自動生成する方式にしたため不要になった)が全通過した場合のみ自動マージ。ユーザーの指示が出るまで有効化しない。
 
 ## 5. 初期10レシピ
 同じ生成フローで一括作成。ジャンル(主菜・副菜・汁物・麺・丼・デザート等)を分散させ、1つのPRにまとめてプレビュー確認 → 承認後に公開開始。
@@ -80,3 +80,6 @@ Claude Code の実行環境は OpenAI に接続できないため、画像は Gi
 
 ## 実装状況: 自動投稿
 Routine(スケジュール実行)が毎日 6:07(日本時間)に新しいセッションを起動し、`docs/auto-post.md` に従って、レシピ1件を `recipe/<slug>` ブランチに push して PR を作る(最新レシピから2日未満ならスキップ)。画像は `images.yml` が生成する。マージはユーザーが行う(フェーズ1)。判断材料は `npm run recipe:status`、ユーザーの希望は `docs/recipe-ideas.md`。
+
+## 実装状況: アフィリエイト
+レシピの `shopping`(道具・特別な材料の検索キーワード)から、楽天市場・Amazonの検索結果へのアフィリエイトリンクを `src/lib/affiliate.mjs` が生成し、詳細ページの「使った道具・材料 PR」枠に表示する。IDは Vercel の環境変数(`RAKUTEN_AFFILIATE_ID`、`AMAZON_TRACKING_ID`)で設定し、未設定のサービスは表示しない。広告表記(PR・説明・Amazon規約の文言)は、有効なサービスに応じてフッターとaboutに出る。AIが商品URLを作らないため、リンク切れや存在しない商品のリスクがない。旧 `affiliate` フィールドと、リンク疎通の検査(`--check-links`)は廃止した。

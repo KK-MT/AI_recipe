@@ -21,6 +21,8 @@ steps:
 tags: ["和食", "副菜", "煮物", "野菜"]
 allergens: []
 tips: "かぼちゃは固いので、切るときは手を切らないよう、安定した場所でゆっくり包丁を入れてください。煮崩れしやすいため、煮ている間は混ぜません。しょうゆ・みそは大豆を原料にしています。市販の調味料は原材料表示を確認してください。"
+shopping:
+  - { label: "落とし蓋", keyword: "落とし蓋 ステンレス" }
 aiGenerated: true
 image:
   src: "/images/recipes/kabocha-nimono.webp"

@@ -25,6 +25,8 @@ steps:
 tags: ["和食", "副菜", "野菜", "常備菜"]
 allergens: []
 tips: "ごぼうは太めに切ると歯ごたえが残ります。辛いのが苦手な方は赤唐辛子を除いてください。冷蔵庫で保存する場合は粗熱を取って清潔な容器に入れ、2〜3日を目安に食べきります。しょうゆ・ごまなどの市販の調味料は原材料表示を確認してください。"
+shopping:
+  - { label: "ささがきピーラー", keyword: "ささがき ピーラー" }
 aiGenerated: true
 image:
   src: "/images/recipes/kinpira-gobo.webp"

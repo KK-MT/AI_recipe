@@ -81,16 +81,6 @@
     "温め",
     "沸騰"
   ],
-  "affiliateDomains": {
-    "amazon": [
-      "amazon.co.jp",
-      "amzn.to"
-    ],
-    "rakuten": [
-      "rakuten.co.jp",
-      "a.r10.to"
-    ]
-  },
   "imageForbiddenTerms": [
     "ディズニー",
     "ミッキー",
