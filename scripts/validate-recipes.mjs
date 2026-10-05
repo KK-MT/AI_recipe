@@ -23,7 +23,7 @@ export function loadRecipes(dir = path.join(root, 'src/content/recipes')) {
 const textOf = (r) =>
   [r.data.title, r.data.description, r.data.tips, ...(r.data.steps ?? []), r.body].filter(Boolean).join('\n');
 
-// 1件のレシピを検査して { level, msg }[] を返す(リンク疎通を除く)
+// 1件のレシピを検査して { level, msg }[] を返す
 export function checkRecipe(r, { publicDir = path.join(root, 'public') } = {}) {
   const d = r.data;
   const out = [];

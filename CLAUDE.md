@@ -58,7 +58,7 @@ npm run images     # 画像が未生成のレシピの画像を生成(OPENAI_API
 - `src/lib/affiliate.mjs`: アフィリエイトリンクの生成(レシピの `shopping` の検索キーワードから作る)
 - `scripts/`: レシピ検証(`validate-recipes.mjs`)とそのテスト。禁止表現・アレルゲン対応表は `rules.json`
 - `.github/workflows/images.yml`: `recipe/**` ブランチへの push で画像を生成してコミットし、CIを再実行(キーは GitHub Secrets の `OPENAI_API_KEY`)
-- `.github/workflows/ci.yml`: PR・pushで test → validate(リンク疎通) → build を実行
+- `.github/workflows/ci.yml`: PR・pushで test → validate → build を実行
 - `docs/auto-post.md`: 自動投稿(Routine)の手順書。`docs/recipe-ideas.md`: 作ってほしい料理のリスト
 - `public/images/recipes/`: レシピ画像
 - `docs/design.md`: 設計書
