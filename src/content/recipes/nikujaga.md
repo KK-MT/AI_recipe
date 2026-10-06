@@ -6,15 +6,15 @@ servings: 2
 prepMinutes: 15
 cookMinutes: 25
 ingredients:
-  - { name: "牛こま切れ肉", amount: "150g" }
-  - { name: "じゃがいも", amount: "3個(約400g)" }
-  - { name: "玉ねぎ", amount: "1個" }
-  - { name: "にんじん", amount: "1/2本" }
-  - { name: "サラダ油", amount: "大さじ1" }
-  - { name: "水", amount: "250ml" }
-  - { name: "しょうゆ", amount: "大さじ2" }
-  - { name: "みりん", amount: "大さじ2" }
-  - { name: "砂糖", amount: "大さじ1と1/2" }
+  - { name: "牛こま切れ肉", amount: "150g", food: "11030", grams: 150 }
+  - { name: "じゃがいも", amount: "3個(約400g)", food: "02017", grams: 360 }
+  - { name: "玉ねぎ", amount: "1個", food: "06153", grams: 200 }
+  - { name: "にんじん", amount: "1/2本", food: "06214", grams: 70 }
+  - { name: "サラダ油", amount: "大さじ1", food: "14006", grams: 12 }
+  - { name: "水", amount: "250ml", food: "-" }
+  - { name: "しょうゆ", amount: "大さじ2", food: "17007", grams: 36 }
+  - { name: "みりん", amount: "大さじ2", food: "16025", grams: 36 }
+  - { name: "砂糖", amount: "大さじ1と1/2", food: "03003", grams: 13.5 }
 steps:
   - "じゃがいもは皮をむいて一口大に切り、水にさらして水気を切る。玉ねぎはくし切り、にんじんは乱切りにする。"
   - "鍋にサラダ油を熱し、牛肉を中火で炒める。色が変わったら、じゃがいも、にんじん、玉ねぎを加えて、油がなじむまで炒める。"

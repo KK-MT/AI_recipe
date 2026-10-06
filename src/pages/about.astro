@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { affiliateIds, hasProvider } from '../lib/affiliate.mjs';
+import { SOURCE_NAME } from '../lib/nutrition.mjs';
 
 const ids = affiliateIds();
 ---
@@ -19,6 +20,15 @@ const ids = affiliateIds();
     使用する市販品の原材料は、必ずパッケージの表示で確認してください。
     加熱が必要な食材は、中心まで十分に加熱してください。
   </p>
+
+  <h2>栄養成分について</h2>
+  <p>
+    各レシピの栄養成分(エネルギー・たんぱく質・脂質・炭水化物・食塩相当量)は、
+    文部科学省「{SOURCE_NAME}」の値をもとに、材料ごとの重さ(可食部)から計算した1人分の目安です。
+    AIが数値を推定したものではありません。
+    調理による重量・成分の変化、食材の個体差、市販品ごとの違いは考慮していません。煮汁・汁も含めた全量の値です。
+  </p>
+  <p class="caption">出典: 文部科学省「{SOURCE_NAME}」(<a href="https://www.mext.go.jp/a_menu/syokuhinseibun/mext_00001.html" rel="noopener">文部科学省のページ</a>)</p>
 
   {hasProvider(ids) && (
     <>

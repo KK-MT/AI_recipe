@@ -81,5 +81,8 @@ Claude Code の実行環境は OpenAI に接続できないため、画像は Gi
 ## 実装状況: 自動投稿
 Routine(スケジュール実行)が毎日 6:07(日本時間)に新しいセッションを起動し、`docs/auto-post.md` に従って、レシピ1件を `recipe/<slug>` ブランチに push して PR を作る(最新レシピから2日未満ならスキップ)。画像は `images.yml` が生成する。マージはユーザーが行う(フェーズ1)。判断材料は `npm run recipe:status`、ユーザーの希望は `docs/recipe-ideas.md`。
 
+## 実装状況: 栄養成分
+文部科学省『日本食品標準成分表(八訂)増補2023年』の本表(公式Excel、令和8年3月27日の正誤反映済み)から、全2,538食品の値を `data/food-composition.json` に取り込んだ(`scripts/build-food-data.mjs`。列は成分識別子で探し、kJ/kcal とエネルギー概算の整合を全件検査する)。レシピの材料には食品番号 `food` と可食部の重さ `grams` を書き、`src/lib/nutrition.mjs` が1人分のエネルギー・たんぱく質・脂質・炭水化物・食塩相当量を計算する。表示は詳細ページの表(出典つき)、一覧カードの「約◯kcal/人分」、JSON-LD の `nutrition`、about の説明。水・氷と捨てる材料は `food: "-"`(計算に含めない)。検証は、食品番号の存在、`grams`、amount との照合(「約◯g」±10%、廃棄率を考慮)、大さじ・小さじの比(警告)、1人分 20〜1,200kcal(警告)。計画は `docs/nutrition-plan.md`。
+
 ## 実装状況: アフィリエイト
 レシピの `shopping`(道具・特別な材料の検索キーワード)から、楽天市場・Amazonの検索結果へのアフィリエイトリンクを `src/lib/affiliate.mjs` が生成し、詳細ページの「使った道具・材料 PR」枠に表示する。IDは Vercel の環境変数(`RAKUTEN_AFFILIATE_ID`、`AMAZON_TRACKING_ID`)で設定し、未設定のサービスは表示しない。広告表記(PR・説明・Amazon規約の文言)は、有効なサービスに応じてフッターとaboutに出る。AIが商品URLを作らないため、リンク切れや存在しない商品のリスクがない。旧 `affiliate` フィールドと、リンク疎通の検査(`--check-links`)は廃止した。

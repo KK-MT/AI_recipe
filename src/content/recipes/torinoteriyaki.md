@@ -6,13 +6,13 @@ servings: 2
 prepMinutes: 10
 cookMinutes: 15
 ingredients:
-  - { name: "鶏もも肉", amount: "1枚(約300g)" }
-  - { name: "片栗粉", amount: "小さじ1" }
-  - { name: "サラダ油", amount: "小さじ1" }
-  - { name: "しょうゆ", amount: "大さじ2" }
-  - { name: "みりん", amount: "大さじ2" }
-  - { name: "酒", amount: "大さじ1" }
-  - { name: "砂糖", amount: "小さじ2" }
+  - { name: "鶏もも肉", amount: "1枚(約300g)", food: "11221", grams: 300 }
+  - { name: "片栗粉", amount: "小さじ1", food: "02034", grams: 3 }
+  - { name: "サラダ油", amount: "小さじ1", food: "14006", grams: 4 }
+  - { name: "しょうゆ", amount: "大さじ2", food: "17007", grams: 36 }
+  - { name: "みりん", amount: "大さじ2", food: "16025", grams: 36 }
+  - { name: "酒", amount: "大さじ1", food: "16001", grams: 15 }
+  - { name: "砂糖", amount: "小さじ2", food: "03003", grams: 6 }
 steps:
   - "鶏もも肉は余分な脂と筋を取り除き、厚い部分に切り込みを入れて厚みを均一にする。"
   - "全体に片栗粉を薄くまぶす。しょうゆ、みりん、酒、砂糖は混ぜ合わせておく。"

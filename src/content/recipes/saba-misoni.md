@@ -6,14 +6,14 @@ servings: 2
 prepMinutes: 10
 cookMinutes: 20
 ingredients:
-  - { name: "さば(切り身)", amount: "2切れ(約200g)" }
-  - { name: "しょうが", amount: "1かけ(薄切り)" }
-  - { name: "水", amount: "150ml" }
-  - { name: "酒", amount: "大さじ3" }
-  - { name: "みりん", amount: "大さじ2" }
-  - { name: "砂糖", amount: "大さじ1" }
-  - { name: "味噌", amount: "大さじ2" }
-  - { name: "しょうゆ", amount: "小さじ1" }
+  - { name: "さば(切り身)", amount: "2切れ(約200g)", food: "10154", grams: 200 }
+  - { name: "しょうが", amount: "1かけ(薄切り)", food: "06103", grams: 12 }
+  - { name: "水", amount: "150ml", food: "-" }
+  - { name: "酒", amount: "大さじ3", food: "16001", grams: 45 }
+  - { name: "みりん", amount: "大さじ2", food: "16025", grams: 36 }
+  - { name: "砂糖", amount: "大さじ1", food: "03003", grams: 9 }
+  - { name: "味噌", amount: "大さじ2", food: "17045", grams: 36 }
+  - { name: "しょうゆ", amount: "小さじ1", food: "17007", grams: 6 }
 steps:
   - "さばは皮に切り込みを2本入れる。ざるに並べて熱湯をかけ、冷水にとって、ぬめりや血を洗い流し、水気を拭く。"
   - "フライパンに水、酒、みりん、砂糖、しょうがを入れて中火にかける。煮立ったら、さばを皮目を上にして重ならないように並べる。"

@@ -30,6 +30,7 @@ AIで料理レシピを作成し、WEBで公開するプロジェクト。担当
 - 画像は OpenAI 画像生成(gpt-image)で作る。APIキーはシークレット管理する。
 - 収益は Amazon / 楽天アフィリエイト。レシピには検索キーワード(`shopping`)だけを書き、リンクはサイトが自動で作る。リンクには PR 表記を付ける。
 - 「AI生成」であることを全記事・画像に明記する。
+- 栄養成分(1人分の目安)は、文部科学省『日本食品標準成分表(八訂)増補2023年』の値から計算する。AIに数値を推定させない。レシピには材料ごとの食品番号(`food`)と可食部の重さ(`grams`)だけを書く。出典を明記する。
 
 ## 開発ルール
 
@@ -48,6 +49,8 @@ npm test           # 検証スクリプトの単体テスト
 npm run validate   # レシピ検証(スキーマ・AI表記・画像・アレルゲン・禁止表現・買い物キーワードなど)
 npm run recipe:status # 自動投稿の判断材料(日付・最新レシピ・タグ別件数)を表示
 npm run images     # 画像が未生成のレシピの画像を生成(OPENAI_API_KEY が必要。通常は Actions が実行)
+npm run food -- <キーワード>  # 成分表の食品を検索(食品番号・100gあたりの値)。レシピの food を選ぶのに使う
+npm run food:build -- <Excel>  # 公式Excel(第2章データ)から data/food-composition.json を作り直す(通常は不要)
 ```
 
 - `src/content.config.ts`: レシピのスキーマ
@@ -55,6 +58,8 @@ npm run images     # 画像が未生成のレシピの画像を生成(OPENAI_API
 - `src/layouts/` / `src/pages/`: レイアウトとページ(一覧、レシピ詳細、`tags/`、`about`、`sitemap.xml`、`robots.txt`)
 - `SITE_URL`: サイトの公開URL(OGP・sitemap用)。未設定ならVercelの本番URL、なければ localhost
 - `RAKUTEN_AFFILIATE_ID` / `AMAZON_TRACKING_ID`: アフィリエイトID(Vercelの環境変数。ProductionとPreview)。未設定のサービスのリンクは表示しない。IDは秘密情報ではないが、コードには書かない
+- `data/food-composition.json`: 日本食品標準成分表(八訂)増補2023年の全2,538食品(100gあたりのエネルギー・たんぱく質・脂質・炭水化物・食塩相当量、廃棄率)。手で編集しない(`food:build` で作る)。Excel本体はコミットしない
+- `src/lib/nutrition.mjs`: 栄養成分の計算(1人分。ページと検証で共用)
 - `src/lib/affiliate.mjs`: アフィリエイトリンクの生成(レシピの `shopping` の検索キーワードから作る)
 - `scripts/`: レシピ検証(`validate-recipes.mjs`)とそのテスト。禁止表現・アレルゲン対応表は `rules.json`
 - `.github/workflows/images.yml`: `recipe/**` ブランチへの push で画像を生成してコミットし、CIを再実行(キーは GitHub Secrets の `OPENAI_API_KEY`)

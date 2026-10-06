@@ -6,13 +6,13 @@ servings: 2
 prepMinutes: 5
 cookMinutes: 10
 ingredients:
-  - { name: "卵", amount: "4個" }
-  - { name: "だし", amount: "大さじ4(60ml)" }
-  - { name: "砂糖", amount: "小さじ2" }
-  - { name: "しょうゆ", amount: "小さじ1/2" }
-  - { name: "塩", amount: "ひとつまみ" }
-  - { name: "サラダ油", amount: "適量" }
-  - { name: "大根おろし", amount: "適量" }
+  - { name: "卵", amount: "4個", food: "12004", grams: 200 }
+  - { name: "だし", amount: "大さじ4(60ml)", food: "17021", grams: 60 }
+  - { name: "砂糖", amount: "小さじ2", food: "03003", grams: 6 }
+  - { name: "しょうゆ", amount: "小さじ1/2", food: "17007", grams: 3 }
+  - { name: "塩", amount: "ひとつまみ", food: "17012", grams: 1 }
+  - { name: "サラダ油", amount: "適量", food: "14006", grams: 4 }
+  - { name: "大根おろし", amount: "適量", food: "06367", grams: 40 }
 steps:
   - "ボウルに卵を割りほぐし、だし、砂糖、しょうゆ、塩を加えて、白身を切るように混ぜる。"
   - "卵焼き器を中火で熱し、キッチンペーパーでサラダ油を薄くなじませる。卵液の1/3量を流し入れ、全体に広げる。"
