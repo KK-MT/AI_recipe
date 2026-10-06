@@ -65,6 +65,7 @@ npm run images     # 画像が未生成のレシピの画像を生成(OPENAI_API
 
 ## 参照
 
+- **引き継ぎ(新しいセッションは最初に読む): `docs/handoff.md`**
 - 統括・担当一覧: `AGENTS.md`
 - レシピ: `agents/recipe/AGENTS.md` / 設計: `agents/design/AGENTS.md` / 画像: `agents/image/AGENTS.md`
 - 実装: `agents/frontend/AGENTS.md` / 公開・運用: `agents/ops/AGENTS.md`
