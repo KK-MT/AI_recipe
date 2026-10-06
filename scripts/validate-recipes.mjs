@@ -3,9 +3,11 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import matter from 'gray-matter';
+import { EXCLUDED, NUTRIENTS, nutritionPerServing } from '../src/lib/nutrition.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const rules = JSON.parse(fs.readFileSync(path.join(root, 'scripts/rules.json'), 'utf8'));
+const defaultFoods = JSON.parse(fs.readFileSync(path.join(root, 'data/food-composition.json'), 'utf8')).foods;
 
 const err = (msg) => ({ level: 'error', msg });
 const warn = (msg) => ({ level: 'warn', msg });
@@ -24,7 +26,7 @@ const textOf = (r) =>
   [r.data.title, r.data.description, r.data.tips, ...(r.data.steps ?? []), r.body].filter(Boolean).join('\n');
 
 // 1件のレシピを検査して { level, msg }[] を返す
-export function checkRecipe(r, { publicDir = path.join(root, 'public') } = {}) {
+export function checkRecipe(r, { publicDir = path.join(root, 'public'), foods = defaultFoods } = {}) {
   const d = r.data;
   const out = [];
 
@@ -90,6 +92,92 @@ export function checkRecipe(r, { publicDir = path.join(root, 'public') } = {}) {
           if (hit) out.push(err(`shopping[${i}].${key} に禁止表現「${hit}」が含まれています`));
         }
       }
+    }
+  }
+
+  out.push(...checkNutrition(d, foods));
+  return out;
+}
+
+// 「1と1/2」「1/2」「2」などの数量を数値にする
+export function parseQuantity(s) {
+  const t = String(s).normalize('NFKC').trim();
+  const m = t.match(/^(\d+(?:\.\d+)?)?(?:と)?(?:(\d+)\/(\d+))?$/);
+  if (!m || (!m[1] && !m[2])) return null;
+  return (m[1] ? Number(m[1]) : 0) + (m[2] ? Number(m[2]) / Number(m[3]) : 0);
+}
+
+const near = (a, b, tol) => Math.abs(a - b) <= b * tol;
+
+// 材料の表示(amount)と重さ(grams)の照合。
+// amount の重さは購入時の重さのことがあるため、可食部(× (1 - 廃棄率))との一致も認める。
+export function checkAmount(i, food) {
+  const amount = String(i.amount ?? '').normalize('NFKC').replace(/\s+/g, '');
+  const keep = 1 - (food?.refuse ?? 0) / 100;
+  const ok = (x, tol) => near(i.grams, x, tol) || near(i.grams, x * keep, tol);
+  const exact = amount.match(/^(\d+(?:\.\d+)?)g$/);
+  if (exact) {
+    const x = Number(exact[1]);
+    return ok(x, 0.01) ? null : err(`材料「${i.name}」: amount(${i.amount})と grams(${i.grams})が一致しません`);
+  }
+  const approx = amount.match(/約(\d+(?:\.\d+)?)g/);
+  if (approx) {
+    const x = Number(approx[1]);
+    return ok(x, 0.1) ? null : err(`材料「${i.name}」: amount(${i.amount})と grams(${i.grams})が10%以上違います`);
+  }
+  const spoon = amount.match(/^(大さじ|小さじ)([\d.と/]+)/);
+  if (spoon) {
+    const q = parseQuantity(spoon[2]);
+    if (q) {
+      const ml = (spoon[1] === '大さじ' ? 15 : 5) * q;
+      const ratio = i.grams / ml;
+      if (ratio < 0.4 || ratio > 1.8) {
+        return warn(`材料「${i.name}」: ${i.amount}(${ml}ml)に対して grams(${i.grams})が不自然です`);
+      }
+    }
+  }
+  return null;
+}
+
+// 栄養成分の計算に使う材料の情報(food・grams)の検査
+export function checkNutrition(d, foods) {
+  const out = [];
+  const ingredients = Array.isArray(d.ingredients) ? d.ingredients : [];
+  let excluded = 0;
+  for (const i of ingredients) {
+    const label = `材料「${i.name}」`;
+    if (i.food === undefined || i.food === null || i.food === '') {
+      out.push(err(`${label}: food(食品番号)がありません(npm run food -- <名前> で探す)`));
+      continue;
+    }
+    if (i.food === EXCLUDED) {
+      excluded++;
+      if (!/[水湯氷]/.test(i.name ?? '')) {
+        out.push(warn(`${label}: 栄養成分の計算に含めない("-")材料です。水・氷や、捨てる材料(ゆで湯の塩など)だけに使ってください`));
+      }
+      continue;
+    }
+    const food = foods[String(i.food)];
+    if (!food) {
+      out.push(err(`${label}: 食品番号 ${i.food} が成分表にありません`));
+      continue;
+    }
+    if (typeof i.grams !== 'number' || !(i.grams > 0)) {
+      out.push(err(`${label}: grams(可食部の重さ)が正の数ではありません`));
+      continue;
+    }
+    const nulls = NUTRIENTS.filter((n) => food[n.key] === null).map((n) => n.label);
+    if (nulls.length) out.push(warn(`${label}: 成分表で${nulls.join('・')}が未測定のため、その項目は表示されません`));
+    const a = checkAmount(i, food);
+    if (a) out.push(a);
+  }
+  if (ingredients.length && excluded * 2 > ingredients.length) {
+    out.push(err(`栄養成分の計算に含めない材料("-")が半分を超えています(${excluded}/${ingredients.length})`));
+  }
+  if (!out.some((x) => x.level === 'error')) {
+    const n = nutritionPerServing(d, foods);
+    if (n?.energy != null && (n.energy < 20 || n.energy > 1200)) {
+      out.push(warn(`1人分のエネルギーが ${Math.round(n.energy)}kcal です(20〜1,200kcal の範囲外)。重さを確認してください`));
     }
   }
   return out;

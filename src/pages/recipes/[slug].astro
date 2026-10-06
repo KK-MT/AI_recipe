@@ -2,6 +2,8 @@
 import { getCollection, render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { affiliateIds, shoppingLinks } from '../../lib/affiliate.mjs';
+import { NUTRIENTS, SOURCE_NAME, formatNutrient, nutritionPerServing, roundNutrition } from '../../lib/nutrition.mjs';
+import foodData from '../../../data/food-composition.json';
 
 export async function getStaticPaths() {
   const recipes = await getCollection('recipes');
@@ -12,6 +14,7 @@ const { recipe } = Astro.props;
 const { data } = recipe;
 const { Content } = await render(recipe);
 const shop = shoppingLinks(data.shopping, affiliateIds());
+const nutrition = roundNutrition(nutritionPerServing(data, foodData.foods));
 
 const iso = (m: number) => `PT${m}M`;
 const jsonLd = {
@@ -29,6 +32,17 @@ const jsonLd = {
   recipeIngredient: data.ingredients.map((i) => `${i.name} ${i.amount}`),
   recipeInstructions: data.steps.map((text) => ({ '@type': 'HowToStep', text })),
   keywords: data.tags.join(', '),
+  // 食塩相当量はナトリウム(sodiumContent)と異なるため入れない
+  ...(nutrition?.energy != null && {
+    nutrition: {
+      '@type': 'NutritionInformation',
+      servingSize: '1人分',
+      calories: `${nutrition.energy} kcal`,
+      ...(nutrition.protein != null && { proteinContent: `${nutrition.protein} g` }),
+      ...(nutrition.fat != null && { fatContent: `${nutrition.fat} g` }),
+      ...(nutrition.carbohydrate != null && { carbohydrateContent: `${nutrition.carbohydrate} g` }),
+    },
+  }),
 };
 ---
 <BaseLayout title={`${data.title} | AIレシピ`} description={data.description} image={data.image.src} type="article">
@@ -57,6 +71,22 @@ const jsonLd = {
     <h2>コツ</h2>
     <p>{data.tips}</p>
 
+    {nutrition && (
+      <section class="nutrition">
+        <h2>栄養成分(1人分・目安)</h2>
+        <table>
+          <tbody>
+            {NUTRIENTS.map((n) => (
+              <tr><th scope="row">{n.label}</th><td>{formatNutrient(nutrition[n.key], n)}</td></tr>
+            ))}
+          </tbody>
+        </table>
+        <p class="caption">
+          {SOURCE_NAME}(文部科学省)をもとに計算した目安です。調理による重量・成分の変化、食材ごとの差は考慮していません。煮汁・汁も含めた全量の値です。
+        </p>
+      </section>
+    )}
+
     <h2>アレルゲン(特定原材料)</h2>
     <p>{data.allergens.length ? data.allergens.join('、') : '特定原材料7品目は使用していません'}</p>
 
@@ -83,6 +113,10 @@ const jsonLd = {
   </article>
 </BaseLayout>
 <style>
+  .nutrition table { border-collapse: collapse; width: 100%; max-width: 360px; font-size: 0.9375rem; }
+  .nutrition th, .nutrition td { padding: 6px 8px; border-bottom: 1px solid #e5e1d8; }
+  .nutrition th { text-align: left; font-weight: normal; }
+  .nutrition td { text-align: right; font-variant-numeric: tabular-nums; }
   .shopping { margin-top: 24px; padding: 12px 16px; border: 1px solid #e5e1d8; border-radius: 8px; background: #fff; }
   .shopping h2 { margin-top: 0; }
   .shopping ul { list-style: none; padding: 0; margin: 8px 0 0; display: grid; gap: 10px; }

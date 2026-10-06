@@ -6,15 +6,15 @@ servings: 2
 prepMinutes: 10
 cookMinutes: 10
 ingredients:
-  - { name: "鶏もも肉", amount: "150g" }
-  - { name: "玉ねぎ", amount: "1/2個" }
-  - { name: "卵", amount: "3個" }
-  - { name: "ご飯", amount: "丼2杯分(約300g)" }
-  - { name: "だし", amount: "150ml" }
-  - { name: "しょうゆ", amount: "大さじ2" }
-  - { name: "みりん", amount: "大さじ2" }
-  - { name: "砂糖", amount: "小さじ1" }
-  - { name: "三つ葉(あれば)", amount: "少々" }
+  - { name: "鶏もも肉", amount: "150g", food: "11221", grams: 150 }
+  - { name: "玉ねぎ", amount: "1/2個", food: "06153", grams: 100 }
+  - { name: "卵", amount: "3個", food: "12004", grams: 150 }
+  - { name: "ご飯", amount: "丼2杯分(約300g)", food: "01088", grams: 300 }
+  - { name: "だし", amount: "150ml", food: "17021", grams: 150 }
+  - { name: "しょうゆ", amount: "大さじ2", food: "17007", grams: 36 }
+  - { name: "みりん", amount: "大さじ2", food: "16025", grams: 36 }
+  - { name: "砂糖", amount: "小さじ1", food: "03003", grams: 3 }
+  - { name: "三つ葉(あれば)", amount: "少々", food: "06278", grams: 3 }
 steps:
   - "鶏肉は一口大のそぎ切りにする。玉ねぎは5mm幅の薄切りにする。卵は割りほぐし、白身を切るように軽く混ぜる。"
   - "小さめのフライパンに、だし、しょうゆ、みりん、砂糖を入れて中火にかける。煮立ったら玉ねぎと鶏肉を入れる。"

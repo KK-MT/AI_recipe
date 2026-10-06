@@ -6,14 +6,14 @@ servings: 2
 prepMinutes: 10
 cookMinutes: 8
 ingredients:
-  - { name: "豚ロース薄切り肉", amount: "200g" }
-  - { name: "玉ねぎ", amount: "1/2個" }
-  - { name: "しょうが(すりおろし)", amount: "1かけ分" }
-  - { name: "しょうゆ", amount: "大さじ2" }
-  - { name: "みりん", amount: "大さじ1" }
-  - { name: "酒", amount: "大さじ1" }
-  - { name: "砂糖", amount: "小さじ1" }
-  - { name: "サラダ油", amount: "小さじ1" }
+  - { name: "豚ロース薄切り肉", amount: "200g", food: "11123", grams: 200 }
+  - { name: "玉ねぎ", amount: "1/2個", food: "06153", grams: 100 }
+  - { name: "しょうが(すりおろし)", amount: "1かけ分", food: "06365", grams: 10 }
+  - { name: "しょうゆ", amount: "大さじ2", food: "17007", grams: 36 }
+  - { name: "みりん", amount: "大さじ1", food: "16025", grams: 18 }
+  - { name: "酒", amount: "大さじ1", food: "16001", grams: 15 }
+  - { name: "砂糖", amount: "小さじ1", food: "03003", grams: 3 }
+  - { name: "サラダ油", amount: "小さじ1", food: "14006", grams: 4 }
 steps:
   - "玉ねぎは5mm幅の薄切りにする。しょうゆ、みりん、酒、砂糖、しょうがを混ぜてたれを作る。"
   - "豚肉を大きければ半分に切り、たれの半量に5分ほど漬ける。"

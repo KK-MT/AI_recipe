@@ -6,14 +6,14 @@ servings: 2
 prepMinutes: 10
 cookMinutes: 15
 ingredients:
-  - { name: "冷凍うどん", amount: "2玉" }
-  - { name: "油揚げ", amount: "2枚" }
-  - { name: "長ねぎ", amount: "1/2本" }
-  - { name: "だし", amount: "700ml" }
-  - { name: "しょうゆ", amount: "大さじ2" }
-  - { name: "みりん", amount: "大さじ2" }
-  - { name: "砂糖", amount: "小さじ2" }
-  - { name: "塩", amount: "少々" }
+  - { name: "冷凍うどん", amount: "2玉", food: "01039", grams: 400 }
+  - { name: "油揚げ", amount: "2枚", food: "04040", grams: 50 }
+  - { name: "長ねぎ", amount: "1/2本", food: "06226", grams: 50 }
+  - { name: "だし", amount: "700ml", food: "17021", grams: 700 }
+  - { name: "しょうゆ", amount: "大さじ2", food: "17007", grams: 36 }
+  - { name: "みりん", amount: "大さじ2", food: "16025", grams: 36 }
+  - { name: "砂糖", amount: "小さじ2", food: "03003", grams: 6 }
+  - { name: "塩", amount: "少々", food: "17012", grams: 0.5 }
 steps:
   - "油揚げは熱湯をかけて油抜きし、キッチンペーパーで水気を押さえて半分に切る。長ねぎは小口切りにする。"
   - "小鍋にだし100ml、しょうゆ大さじ1、みりん大さじ1、砂糖を入れ、油揚げを加える。中火で煮汁が少なくなるまで、5〜6分煮て、味を含ませる。"

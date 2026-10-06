@@ -6,11 +6,11 @@ servings: 2
 prepMinutes: 10
 cookMinutes: 3
 ingredients:
-  - { name: "ほうれん草", amount: "1束(約200g)" }
-  - { name: "塩", amount: "少々(ゆで湯用)" }
-  - { name: "白すりごま", amount: "大さじ2" }
-  - { name: "しょうゆ", amount: "小さじ2" }
-  - { name: "砂糖", amount: "小さじ2" }
+  - { name: "ほうれん草", amount: "1束(約200g)", food: "06267", grams: 180 }
+  - { name: "塩", amount: "少々(ゆで湯用)", food: "-" }
+  - { name: "白すりごま", amount: "大さじ2", food: "05018", grams: 12 }
+  - { name: "しょうゆ", amount: "小さじ2", food: "17007", grams: 12 }
+  - { name: "砂糖", amount: "小さじ2", food: "03003", grams: 6 }
 steps:
   - "鍋に湯を沸かし、塩を加える。ほうれん草は根元を洗って泥を落とし、根元から入れて、1分ほどゆでる。"
   - "冷水にとって冷まし、水気をしっかり絞る。3〜4cm長さに切り、もう一度、軽く絞る。"

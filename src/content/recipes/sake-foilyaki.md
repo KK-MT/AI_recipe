@@ -6,14 +6,14 @@ servings: 2
 prepMinutes: 10
 cookMinutes: 15
 ingredients:
-  - { name: "生鮭", amount: "2切れ" }
-  - { name: "しめじ", amount: "1/2パック" }
-  - { name: "えのきたけ", amount: "1/2袋" }
-  - { name: "塩", amount: "少々" }
-  - { name: "こしょう", amount: "少々" }
-  - { name: "酒", amount: "大さじ1" }
-  - { name: "しょうゆ", amount: "小さじ2" }
-  - { name: "レモン(くし切り)", amount: "2切れ" }
+  - { name: "生鮭", amount: "2切れ", food: "10134", grams: 160 }
+  - { name: "しめじ", amount: "1/2パック", food: "08016", grams: 45 }
+  - { name: "えのきたけ", amount: "1/2袋", food: "08001", grams: 43 }
+  - { name: "塩", amount: "少々", food: "17012", grams: 0.5 }
+  - { name: "こしょう", amount: "少々", food: "17065", grams: 0.1 }
+  - { name: "酒", amount: "大さじ1", food: "16001", grams: 15 }
+  - { name: "しょうゆ", amount: "小さじ2", food: "17007", grams: 12 }
+  - { name: "レモン(くし切り)", amount: "2切れ", food: "07156", grams: 10 }
 steps:
   - "鮭は水気をキッチンペーパーで拭き、塩とこしょうを軽くふる。しめじは石づきを取って小房に分け、えのきは石づきを取って半分に切りほぐす。"
   - "30cm角ほどのアルミホイルを2枚用意し、それぞれの中央にきのこを半量ずつ敷き、鮭をのせる。"

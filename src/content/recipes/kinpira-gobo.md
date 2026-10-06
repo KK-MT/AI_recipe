@@ -6,15 +6,15 @@ servings: 2
 prepMinutes: 10
 cookMinutes: 10
 ingredients:
-  - { name: "ごぼう", amount: "1/2本(約80g)" }
-  - { name: "にんじん", amount: "1/3本(約50g)" }
-  - { name: "ごま油", amount: "小さじ2" }
-  - { name: "赤唐辛子(輪切り)", amount: "少々" }
-  - { name: "酒", amount: "大さじ1" }
-  - { name: "みりん", amount: "大さじ1" }
-  - { name: "しょうゆ", amount: "大さじ1" }
-  - { name: "砂糖", amount: "小さじ1" }
-  - { name: "白いりごま", amount: "小さじ1" }
+  - { name: "ごぼう", amount: "1/2本(約80g)", food: "06084", grams: 72 }
+  - { name: "にんじん", amount: "1/3本(約50g)", food: "06214", grams: 45 }
+  - { name: "ごま油", amount: "小さじ2", food: "14002", grams: 8 }
+  - { name: "赤唐辛子(輪切り)", amount: "少々", food: "06172", grams: 0.3 }
+  - { name: "酒", amount: "大さじ1", food: "16001", grams: 15 }
+  - { name: "みりん", amount: "大さじ1", food: "16025", grams: 18 }
+  - { name: "しょうゆ", amount: "大さじ1", food: "17007", grams: 18 }
+  - { name: "砂糖", amount: "小さじ1", food: "03003", grams: 3 }
+  - { name: "白いりごま", amount: "小さじ1", food: "05018", grams: 2 }
 steps:
   - "ごぼうは皮をこそげ、5cm長さのせん切りにして水に5分ほどさらし、水気を切る。にんじんも同じ長さのせん切りにする。"
   - "フライパンにごま油と赤唐辛子を入れて中火で熱し、ごぼうを2〜3分炒める。"

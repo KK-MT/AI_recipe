@@ -12,7 +12,20 @@ const recipes = defineCollection({
     servings: z.number().int().positive(),
     prepMinutes: z.number().int().nonnegative(),
     cookMinutes: z.number().int().nonnegative(),
-    ingredients: z.array(z.object({ name: z.string(), amount: z.string() })).min(1),
+    // food: 日本食品標準成分表の食品番号(5桁)。水・氷、ゆで湯の塩など計算に含めない材料は "-"
+    // grams: 可食部の重さ(g)。栄養成分の計算に使う("-" のときは省略可)
+    ingredients: z
+      .array(
+        z
+          .object({
+            name: z.string(),
+            amount: z.string(),
+            food: z.string().regex(/^(\d{5}|-)$/),
+            grams: z.number().positive().optional(),
+          })
+          .refine((i) => i.food === '-' || i.grams !== undefined, { message: 'grams(可食部の重さ)がありません' }),
+      )
+      .min(1),
     steps: z.array(z.string()).min(1),
     tags: z.array(z.string()),
     // 特定原材料7品目のうち使うもの。使わない場合は空配列

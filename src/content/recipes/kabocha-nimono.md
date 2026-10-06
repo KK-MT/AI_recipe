@@ -6,12 +6,12 @@ servings: 2
 prepMinutes: 10
 cookMinutes: 15
 ingredients:
-  - { name: "かぼちゃ", amount: "1/4個(約350g)" }
-  - { name: "水", amount: "200ml" }
-  - { name: "砂糖", amount: "大さじ1と1/2" }
-  - { name: "しょうゆ", amount: "大さじ1と1/2" }
-  - { name: "みりん", amount: "大さじ1" }
-  - { name: "酒", amount: "大さじ1" }
+  - { name: "かぼちゃ", amount: "1/4個(約350g)", food: "06048", grams: 315 }
+  - { name: "水", amount: "200ml", food: "-" }
+  - { name: "砂糖", amount: "大さじ1と1/2", food: "03003", grams: 13.5 }
+  - { name: "しょうゆ", amount: "大さじ1と1/2", food: "17007", grams: 27 }
+  - { name: "みりん", amount: "大さじ1", food: "16025", grams: 18 }
+  - { name: "酒", amount: "大さじ1", food: "16001", grams: 15 }
 steps:
   - "かぼちゃは種とわたをスプーンで取り除き、3〜4cm角に切る。皮は所々むく。"
   - "鍋に皮を下にして、重ならないようにかぼちゃを並べる。"

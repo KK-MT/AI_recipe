@@ -6,11 +6,11 @@ servings: 2
 prepMinutes: 5
 cookMinutes: 5
 ingredients:
-  - { name: "絹ごし豆腐", amount: "1/2丁(約150g)" }
-  - { name: "乾燥わかめ", amount: "大さじ1(約2g)" }
-  - { name: "だし", amount: "400ml" }
-  - { name: "みそ", amount: "大さじ2(約30g)" }
-  - { name: "長ねぎ(小口切り)", amount: "少々" }
+  - { name: "絹ごし豆腐", amount: "1/2丁(約150g)", food: "04033", grams: 150 }
+  - { name: "乾燥わかめ", amount: "大さじ1(約2g)", food: "09044", grams: 2 }
+  - { name: "だし", amount: "400ml", food: "17021", grams: 400 }
+  - { name: "みそ", amount: "大さじ2(約30g)", food: "17045", grams: 30 }
+  - { name: "長ねぎ(小口切り)", amount: "少々", food: "06226", grams: 5 }
 steps:
   - "乾燥わかめは、たっぷりの水で3〜5分戻し、水気を切る。豆腐は1.5cm角に切る。"
   - "鍋にだしを入れて中火にかけ、温める。"
