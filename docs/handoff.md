@@ -22,7 +22,7 @@ AIが料理レシピを作ってWEBで公開するサイト(Astro の静的サ�
 ## 2. 栄養成分の表示(実装済み・ブランチに push 済み、PR未作成)
 
 - 計画: `docs/nutrition-plan.md`(2026-10-06 の変更を含め、ユーザー承認済み)。実装の内容は `docs/design.md` の「実装状況: 栄養成分」。
-- データ: 公式Excel(第2章データ `20260327-mxt_kagsei-mext-000029402_02.xlsx`)から `data/food-composition.json`(2,538食品)を作った。環境は `www.mext.go.jp` に接続できるようになった。データの作り直しが必要になったら、公式ページでExcelのURLを確認し、`npm run food:build -- <Excel>`。**数値を記憶で作ったり、手で書き足したりしない。**
+- データ: 公式Excel(第2章データ `20260327-mxt_kagsei-mext-000029402_02.xlsx`)から `data/food-composition.json`(2,538食品)を作った。環境は `www.mext.go.jp` に接続できるようになった。データの作り直しが必要になったら、公式ページでExcelのURLを確認し、`npm run food:build -- <Excel>`。MEXT のサイトは、ときどき SSL のエラー(`SSL_ERROR_SYSCALL`)で切れるが、やり直せば成功する(`curl --retry 3` など)。**数値を記憶で作ったり、手で書き足したりしない。**
 - 既存12レシピは `food`/`grams` をバックフィル済み(`food`/`grams` は必須になった)。重さは、計量スプーンの一般的な目安(しょうゆ大さじ1=18g など)と可食部で決めた。ほうれん草のゆで湯の塩は `food: "-"` で、検証の警告が1件出るのは想定どおり。
 - 自動投稿の手順書(`docs/auto-post.md`)に `food`/`grams` の書き方を追加した。**このブランチが `main` にマージされた後の、最初の自動投稿のレシピPRで、`food`/`grams` が書かれ、栄養成分が表示されるかを確認する**(計画の Verification 5)。マージ前に作られたレシピPR(`food`/`grams` なし)は、マージ後に検証で失敗するため、`food`/`grams` を書き足す。
 - 未完了: ユーザーが「PR作成して」と言ったら、PRを作る。PR本文には、材料の対応(材料 → 食品 → 重さ)と1人分の値の一覧を載せる。
