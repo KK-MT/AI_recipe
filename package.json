@@ -10,12 +10,15 @@
     "validate": "node scripts/validate-recipes.mjs",
     "test": "node --test scripts/*.test.mjs",
     "images": "node scripts/generate-images.mjs",
-    "recipe:status": "node scripts/recipe-status.mjs"
+    "recipe:status": "node scripts/recipe-status.mjs",
+    "food": "node scripts/food.mjs",
+    "food:build": "node scripts/build-food-data.mjs"
   },
   "dependencies": {
     "astro": "^7.3.5"
   },
   "devDependencies": {
+    "exceljs": "^4.4.0",
     "gray-matter": "^4.0.3",
     "sharp": "^0.35.5"
   }
