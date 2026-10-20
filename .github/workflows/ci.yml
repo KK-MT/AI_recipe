@@ -24,6 +24,15 @@ jobs:
       - name: テスト
         run: npm test
       - name: レシピ検証
-        run: npm run validate
+        # レシピPR(recipe/**)の最初のCIは、画像の生成前に走る。生成待ち(image.prompt あり)は警告にとどめる。
+        # 画像の追加後に images.yml が再実行するCIと、自動マージ(automerge.yml)では、従来どおり画像を必須にする。
+        env:
+          ALLOW_PENDING: ${{ github.event_name == 'pull_request' && startsWith(github.head_ref, 'recipe/') }}
+        run: |
+          if [ "$ALLOW_PENDING" = "true" ]; then
+            npm run validate -- --allow-pending-images
+          else
+            npm run validate
+          fi
       - name: ビルド
         run: npm run build

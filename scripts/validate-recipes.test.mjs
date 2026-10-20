@@ -52,6 +52,18 @@ test('image.aiGenerated が無いとエラー', () => {
   assert.ok(errors(r).some((m) => m.includes('image.aiGenerated')));
 });
 
+test('allowPendingImages: image.prompt があれば、画像の生成待ちは警告にとどめる', () => {
+  const r = base();
+  r.data.image.src = '/images/recipes/none.webp';
+  r.data.image.prompt = '白い皿に盛った料理';
+  const opts = { publicDir, allowPendingImages: true };
+  assert.deepEqual(checkRecipe(r, opts).filter((x) => x.level === 'error'), []);
+  assert.ok(checkRecipe(r, opts).some((x) => x.level === 'warn' && x.msg.includes('実行待ち')));
+  // prompt が無ければ、生成できないのでエラーのまま
+  delete r.data.image.prompt;
+  assert.ok(checkRecipe(r, opts).some((x) => x.level === 'error' && x.msg.includes('画像ファイルが見つかりません')));
+});
+
 test('画像ファイルが無いとエラー', () => {
   const r = base();
   r.data.image.src = '/images/recipes/none.webp';
