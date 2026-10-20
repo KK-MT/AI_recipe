@@ -25,8 +25,9 @@ export function loadRecipes(dir = path.join(root, 'src/content/recipes')) {
 const textOf = (r) =>
   [r.data.title, r.data.description, r.data.tips, ...(r.data.steps ?? []), r.body].filter(Boolean).join('\n');
 
-// 1件のレシピを検査して { level, msg }[] を返す
-export function checkRecipe(r, { publicDir = path.join(root, 'public'), foods = defaultFoods } = {}) {
+// 1件のレシピを検査して { level, msg }[] を返す。
+// allowPendingImages: 画像が未生成でも image.prompt があれば警告にとどめる(画像生成前のレシピPRのCI用)
+export function checkRecipe(r, { publicDir = path.join(root, 'public'), foods = defaultFoods, allowPendingImages = false } = {}) {
   const d = r.data;
   const out = [];
 
@@ -48,7 +49,8 @@ export function checkRecipe(r, { publicDir = path.join(root, 'public'), foods = 
       out.push(err('image.src がありません'));
     } else if (!fs.existsSync(path.join(publicDir, d.image.src))) {
       const hint = d.image.prompt ? '(image.prompt があるので画像生成の実行待ちです)' : '(image.prompt も無いため生成できません)';
-      out.push(err(`画像ファイルが見つかりません: public${d.image.src}${hint}`));
+      const level = allowPendingImages && d.image.prompt ? warn : err;
+      out.push(level(`画像ファイルが見つかりません: public${d.image.src}${hint}`));
     }
   }
 
@@ -199,10 +201,11 @@ export function checkDuplicates(recipes) {
 }
 
 async function main() {
+  const allowPendingImages = process.argv.includes('--allow-pending-images');
   const recipes = loadRecipes();
   const results = [];
   for (const r of recipes) {
-    for (const p of checkRecipe(r)) results.push({ slug: r.slug, ...p });
+    for (const p of checkRecipe(r, { allowPendingImages })) results.push({ slug: r.slug, ...p });
   }
   results.push(...checkDuplicates(recipes));
 

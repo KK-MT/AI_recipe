@@ -12,7 +12,8 @@
     "images": "node scripts/generate-images.mjs",
     "recipe:status": "node scripts/recipe-status.mjs",
     "food": "node scripts/food.mjs",
-    "food:build": "node scripts/build-food-data.mjs"
+    "food:build": "node scripts/build-food-data.mjs",
+    "automerge:check": "node scripts/automerge.mjs check"
   },
   "dependencies": {
     "astro": "^7.3.5"

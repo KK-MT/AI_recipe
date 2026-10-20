@@ -38,6 +38,7 @@ jobs:
           LIMIT: ${{ inputs.limit || '12' }}
         run: npm run images -- --limit "$LIMIT"
       - name: 生成した画像をコミットして CI を再実行
+        id: commit
         env:
           GH_TOKEN: ${{ github.token }}
           BRANCH: ${{ github.ref_name }}
@@ -52,3 +53,22 @@ jobs:
           git commit -m "AI生成画像を追加"
           git push origin "HEAD:${BRANCH}"
           gh workflow run ci.yml --ref "${BRANCH}"
+          echo "pushed=true" >> "$GITHUB_OUTPUT"
+      - name: 承認待ちで止まった重複のCIを削除
+        if: steps.commit.outputs.pushed == 'true'
+        # 上の push で作られる pull_request のCIは、承認待ち(action_required)のまま止まり、
+        # PRのマージ時に「失敗」になって通知が出る。同じコミットは上で再実行したCIが検査するので、削除する。
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BRANCH: ${{ github.ref_name }}
+        run: |
+          for i in 1 2 3 4 5 6; do
+            sleep 10
+            ids=$(gh run list --branch "$BRANCH" --event pull_request --workflow ci.yml --limit 20 \
+              --json databaseId,conclusion --jq '.[] | select(.conclusion == "action_required") | .databaseId')
+            if [ -n "$ids" ]; then
+              for id in $ids; do gh run delete "$id" && echo "削除しました: $id"; done
+              exit 0
+            fi
+          done
+          echo "承認待ちのCIは見つかりませんでした"

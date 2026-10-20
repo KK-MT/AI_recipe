@@ -25,8 +25,8 @@ AIで料理レシピを作成し、WEBで公開するプロジェクト。担当
 - OpenAI APIキーは GitHub Secrets / 実行環境の環境変数で管理する。`.env` はコミットしない(`.env.example` にキー名のみ)。
 - 自動投稿は Claude Code のスケジュール実行(2日に1回)。ブランチ作成 → PR作成までを行う。
 - 承認フロー
-  - 最初の数週間: PRをユーザーがスマホの GitHub アプリでマージして公開する。
-  - その後: 検証に通ったものを自動マージへ移行する。移行はユーザーの指示があるまで行わない。
+  - フェーズ1: PRをユーザーがスマホの GitHub アプリでマージして公開する。
+  - フェーズ2(ユーザーの指示で実装済み): レシピPRは、検証に通れば 12:07(日本時間)に自動マージする(`automerge.yml`)。リポジトリ変数 `AUTO_MERGE=on` のときだけ動く。「保留」ラベルで止められる。レシピ以外のPRは自動マージしない。
 - 画像は OpenAI 画像生成(gpt-image)で作る。APIキーはシークレット管理する。
 - 収益は Amazon / 楽天アフィリエイト。レシピには検索キーワード(`shopping`)だけを書き、リンクはサイトが自動で作る。リンクには PR 表記を付ける。
 - 「AI生成」であることを全記事・画像に明記する。
@@ -51,6 +51,7 @@ npm run recipe:status # 自動投稿の判断材料(日付・最新レシピ・�
 npm run images     # 画像が未生成のレシピの画像を生成(OPENAI_API_KEY が必要。通常は Actions が実行)
 npm run food -- <キーワード>  # 成分表の食品を検索(食品番号・100gあたりの値)。レシピの food を選ぶのに使う
 npm run food:build -- <Excel>  # 公式Excel(第2章データ)から data/food-composition.json を作り直す(通常は不要)
+npm run automerge:check -- <slug>  # 自動マージの基準での検査(新しいレシピのエラー・警告0件、栄養成分、画像)
 ```
 
 - `src/content.config.ts`: レシピのスキーマ
@@ -62,8 +63,9 @@ npm run food:build -- <Excel>  # 公式Excel(第2章データ)から data/food-c
 - `src/lib/nutrition.mjs`: 栄養成分の計算(1人分。ページと検証で共用)
 - `src/lib/affiliate.mjs`: アフィリエイトリンクの生成(レシピの `shopping` の検索キーワードから作る)
 - `scripts/`: レシピ検証(`validate-recipes.mjs`)とそのテスト。禁止表現・アレルゲン対応表は `rules.json`
-- `.github/workflows/images.yml`: `recipe/**` ブランチへの push で画像を生成してコミットし、CIを再実行(キーは GitHub Secrets の `OPENAI_API_KEY`)
-- `.github/workflows/ci.yml`: PR・pushで test → validate → build を実行
+- `.github/workflows/images.yml`: `recipe/**` ブランチへの push で画像を生成してコミットし、CIを再実行し、承認待ちで止まった重複のCIを削除(キーは GitHub Secrets の `OPENAI_API_KEY`)
+- `.github/workflows/ci.yml`: PR・pushで test → validate → build を実行(レシピPRの最初のCIは、画像の生成待ちを警告にとどめる)
+- `.github/workflows/automerge.yml`: レシピPRの自動マージ(フェーズ2)。条件と検査は `scripts/automerge.mjs`
 - `docs/auto-post.md`: 自動投稿(Routine)の手順書。`docs/recipe-ideas.md`: 作ってほしい料理のリスト
 - `public/images/recipes/`: レシピ画像
 - `docs/design.md`: 設計書

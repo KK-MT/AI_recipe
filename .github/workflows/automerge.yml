@@ -1,0 +1,98 @@
+name: 自動マージ
+
+# フェーズ2: 自動投稿のレシピPRを、条件をすべて満たすときだけ自動でマージする(条件は scripts/automerge.mjs)。
+# 毎日 12:07(日本時間)に動く。作成から4時間たっていないPR、「保留」ラベルの付いたPRはマージしない。
+# リポジトリ変数 AUTO_MERGE が "on" のときだけ動く(止めるときは、変数を消すか "off" にする)。
+
+on:
+  schedule:
+    - cron: '7 3 * * *' # 12:07 JST
+  workflow_dispatch:
+    inputs:
+      pr:
+        description: 'PR番号(指定すると、作成からの経過時間を待たずに、そのPRだけを検査する)'
+        required: false
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+concurrency:
+  group: automerge
+  cancel-in-progress: false
+
+jobs:
+  automerge:
+    if: vars.AUTO_MERGE == 'on'
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      # 判定には main のコードを使う(PRのコードは、変更ファイルを確認するまで実行しない)
+      - uses: actions/checkout@v5
+        with:
+          ref: main
+          fetch-depth: 0
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: 「保留」ラベルを用意
+        run: gh label create "保留" --color FBCA04 --description "自動マージを止める" 2>/dev/null || true
+      - name: 対象のPRを選ぶ
+        id: select
+        env:
+          PR: ${{ inputs.pr }}
+        run: |
+          if [ -n "$PR" ]; then
+            node scripts/automerge.mjs select --pr "$PR"
+          else
+            node scripts/automerge.mjs select
+          fi
+      - name: PRを main にマージした状態を作り、変更ファイルを再確認
+        if: steps.select.outputs.number
+        env:
+          SHA: ${{ steps.select.outputs.sha }}
+          SLUG: ${{ steps.select.outputs.slug }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin "$SHA"
+          git merge --no-edit --no-ff "$SHA"
+          # 選んだ時点から変わっていないことを、選んだコミットそのもので確認する
+          bad=$(git diff --name-only origin/main HEAD | grep -vxF -e "src/content/recipes/${SLUG}.md" -e "public/images/recipes/${SLUG}.webp" -e "docs/recipe-ideas.md" || true)
+          if [ -n "$bad" ]; then
+            echo "自動マージで変更できないファイルがあります: $bad"
+            exit 1
+          fi
+      - name: 検査(テスト・検証・ビルド・自動マージ用の検査)
+        if: steps.select.outputs.number
+        env:
+          SLUG: ${{ steps.select.outputs.slug }}
+          SUMMARY_FILE: ${{ runner.temp }}/summary.txt
+        run: |
+          npm ci
+          npm test
+          npm run validate
+          npm run build
+          node scripts/automerge.mjs check "$SLUG"
+      - name: マージする
+        if: steps.select.outputs.number
+        env:
+          NUMBER: ${{ steps.select.outputs.number }}
+          SHA: ${{ steps.select.outputs.sha }}
+          SUMMARY_FILE: ${{ runner.temp }}/summary.txt
+        run: |
+          printf '検証に通ったため、自動マージします。%s\nサイトへの反映は、Vercel の本番デプロイ後です。\n' "$(cat "$SUMMARY_FILE")" > "$RUNNER_TEMP/body.txt"
+          node scripts/automerge.mjs comment "$NUMBER" merged "$RUNNER_TEMP/body.txt"
+          gh pr merge "$NUMBER" --merge --match-head-commit "$SHA" --delete-branch
+      - name: 失敗したらPRに知らせる
+        if: failure() && steps.select.outputs.number
+        env:
+          NUMBER: ${{ steps.select.outputs.number }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          printf '自動マージの検査に失敗したため、マージしませんでした。確認してから手動でマージしてください(直したあとは、自動マージのワークフローを PR番号を指定して手動実行すると、もう一度検査します)。\n\nログ: %s\n' "$RUN_URL" > "$RUNNER_TEMP/body.txt"
+          node scripts/automerge.mjs comment "$NUMBER" failed "$RUNNER_TEMP/body.txt"
