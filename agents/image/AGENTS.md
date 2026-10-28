@@ -11,7 +11,8 @@ Claude Code の実行環境からは OpenAI に接続できないため、**GitH
 
 1. レシピ担当が `recipe/<slug>` ブランチに、`image.src`(`/images/recipes/<slug>.webp`)と `image.prompt` を書いたレシピを push する。
 2. Actions が `npm run images` を実行し、未生成の画像を webp で作ってブランチにコミットし、CI を再実行する。
-3. 最初の CI は画像が無いため赤になる。画像コミット後の再実行で緑になる(仕様)。
+3. 最初の CI は、画像の生成待ちを警告にとどめる。画像コミット後の再実行で、画像の存在まで検査する。
+4. モデル名は `scripts/image-style.json` の `model`(現在 `gpt-image-2`)。OpenAI がモデルを提供終了すると「The model ... does not exist」で失敗するので、`model` を後継に直すか、リポジトリ変数 `OPENAI_IMAGE_MODEL` を設定する。
 
 画像担当の仕事は、`image.prompt` の品質管理(材料・盛り付け・器・光の当て方が正確に伝わること)と、生成結果の確認。
 

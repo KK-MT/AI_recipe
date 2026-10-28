@@ -35,6 +35,8 @@ jobs:
       - name: 画像を生成
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          # モデル名を変えるときは、リポジトリ変数 OPENAI_IMAGE_MODEL を設定する(未設定なら scripts/image-style.json の model)
+          OPENAI_IMAGE_MODEL: ${{ vars.OPENAI_IMAGE_MODEL }}
           LIMIT: ${{ inputs.limit || '12' }}
         run: npm run images -- --limit "$LIMIT"
       - name: 生成した画像をコミットして CI を再実行
