@@ -1,4 +1,5 @@
 // 画像が未生成のレシピ(image.prompt あり)に gpt-image で画像を作る。
+// モデル名は scripts/image-style.json の model。環境変数 OPENAI_IMAGE_MODEL があれば、そちらを使う。
 // 使い方: OPENAI_API_KEY=... node scripts/generate-images.mjs [--limit N]
 import fs from 'node:fs';
 import path from 'node:path';
@@ -24,7 +25,9 @@ export function findPending(recipes, publicDir = path.join(root, 'public')) {
 
 const redact = (text, apiKey) => (apiKey ? String(text).split(apiKey).join('***') : String(text));
 
-export async function requestImage({ prompt, apiKey, model = 'gpt-image-1', fetchImpl = fetch, timeoutMs = 120000 }) {
+const MODEL_HINT = '(モデル名は scripts/image-style.json の model、または GitHub の変数 OPENAI_IMAGE_MODEL で変更できます)';
+
+export async function requestImage({ prompt, apiKey, model = style.model, fetchImpl = fetch, timeoutMs = 120000 }) {
   let res;
   try {
     res = await fetchImpl('https://api.openai.com/v1/images/generations', {
@@ -38,7 +41,10 @@ export async function requestImage({ prompt, apiKey, model = 'gpt-image-1', fetc
     throw e;
   }
   const json = await res.json().catch(() => ({}));
-  if (!res.ok) throw new Error(`OpenAI API エラー(${res.status}): ${redact(json?.error?.message ?? '詳細なし', apiKey)}`);
+  if (!res.ok) {
+    const hint = res.status === 400 || res.status === 404 ? MODEL_HINT : '';
+    throw new Error(`OpenAI API エラー(${res.status}, モデル ${model}): ${redact(json?.error?.message ?? '詳細なし', apiKey)}${hint}`);
+  }
   const b64 = json?.data?.[0]?.b64_json;
   if (!b64) throw new Error('OpenAI API の応答に画像データがありません');
   return Buffer.from(b64, 'base64');

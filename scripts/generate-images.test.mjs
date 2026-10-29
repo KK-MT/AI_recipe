@@ -50,12 +50,25 @@ test('run: 生成して webp を保存し、limit を守る。再実行は何も
   assert.equal(calls.length, 2);
 });
 
-test('リクエストにキーとモデルが入る', async () => {
+test('リクエストにキーとモデルが入る(指定したモデルを使う)', async () => {
   const calls = [];
-  await requestImage({ prompt: 'p', apiKey: KEY, model: 'gpt-image-1', fetchImpl: okFetch(calls) });
+  await requestImage({ prompt: 'p', apiKey: KEY, model: 'test-model', fetchImpl: okFetch(calls) });
   assert.equal(calls[0].url, 'https://api.openai.com/v1/images/generations');
   assert.equal(calls[0].init.headers.Authorization, `Bearer ${KEY}`);
-  assert.equal(JSON.parse(calls[0].init.body).model, 'gpt-image-1');
+  assert.equal(JSON.parse(calls[0].init.body).model, 'test-model');
+});
+
+test('モデルを指定しなければ image-style.json の model を使う', async () => {
+  const style = JSON.parse(fs.readFileSync(new URL('./image-style.json', import.meta.url), 'utf8'));
+  assert.equal(style.model, 'gpt-image-2');
+  const calls = [];
+  await requestImage({ prompt: 'p', apiKey: KEY, fetchImpl: okFetch(calls) });
+  assert.equal(JSON.parse(calls[0].init.body).model, style.model);
+});
+
+test('400 エラーには、モデル名の変更方法の案内が付く', async () => {
+  const notFound = async () => ({ ok: false, status: 400, json: async () => ({ error: { message: "The model 'x' does not exist." } }) });
+  await assert.rejects(requestImage({ prompt: 'p', apiKey: KEY, model: 'x', fetchImpl: notFound }), /モデル x.*does not exist.*OPENAI_IMAGE_MODEL/);
 });
 
 test('失敗しても残りを続け、ログにキーが出ない', async () => {

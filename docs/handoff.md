@@ -10,7 +10,7 @@ AIが料理レシピを作ってWEBで公開するサイト(Astro の静的サ�
 |---|---|
 | サイト | 公開済み。レシピ12件(初期10件 + きんぴらごぼう + さばの味噌煮)。一覧は料理ごとのカード表示 |
 | 自動投稿 | Routine `trig_01CoGuhXnVWw45AkJA9zESm7`(毎日 6:07 JST に起動。最新レシピから2日未満ならスキップ)。1回に1レシピのPRを作る。**マージはユーザーがスマホで行う(フェーズ1)** |
-| 画像 | GitHub Actions(`images.yml`)が gpt-image で生成してコミット。キーは GitHub Secrets の `OPENAI_API_KEY` |
+| 画像 | GitHub Actions(`images.yml`)が gpt-image で生成してコミット。キーは GitHub Secrets の `OPENAI_API_KEY`。モデルは `gpt-image-2`(`scripts/image-style.json`。変数 `OPENAI_IMAGE_MODEL` で上書き可)。**`gpt-image-1` は 10/23 に提供終了し、10/24〜の画像生成が失敗した**(鶏そぼろ丼は画像なしでマージ→取り消し、けんちん汁は止まっていた) |
 | アフィリエイト | 楽天・Amazonの検索リンクを、レシピの `shopping` から自動生成。IDは Vercel の環境変数(`RAKUTEN_AFFILIATE_ID`、`AMAZON_TRACKING_ID`)。**ユーザーが両方設定済みで、サイトにリンクが出ることを確認済み** |
 | 検証・CI | `npm run validate` と `npm test`、`ci.yml`(test → validate → build) |
 | 独自ドメイン | 未取得。ユーザーは「しばらく様子を見る」。取得するときは `SITE_URL` を設定し、楽天・Amazon に登録したサイトURLも更新する |
